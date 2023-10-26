@@ -11,10 +11,35 @@ config_version=5
 [application]
 
 config/name="ValidateTestFilesGodot4"
-config/features=PackedStringArray("4.2", "GL Compatibility")
-config/icon="res://icon.svg"
+run/main_scene="res://main.tscn"
+config/features=PackedStringArray("4.2")
+
+[display]
+
+window/size/viewport_width=630
+window/size/viewport_height=500
+window/stretch/mode="canvas_items"
+
+[editor]
+
+version_control/plugin_name="GitPlugin"
+version_control/autoload_on_startup=true
+
+[gui]
+
+common/drop_mouse_on_gui_input_disabled=true
+
+[network]
+
+limits/debugger/max_queued_messages=20480
+
+[physics]
+
+common/enable_pause_aware_picking=true
 
 [rendering]
 
-renderer/rendering_method="gl_compatibility"
-renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
+environment/defaults/default_environment="res://default_env.tres"
+quality/driver/driver_name="GLES2"
+vram_compression/import_etc=true
