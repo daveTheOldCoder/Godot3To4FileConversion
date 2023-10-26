@@ -135,6 +135,6 @@ static func decrypt_with_pass(path: String, password: String, ignore_md5: bool =
 static func is_encrypted_godot_3_file(path: String) -> bool:
 	#print_debug("is_encrypted_godot_3_file, path '%s'" % path)
 	# In this case, the password isn't needed or provided, and the MD5 check cannot be done without
-	# the correct password, since the MD5 is computed om the decrypted data.
+	# the correct password, since the MD5 is computed on the decrypted data.
 	var decrypted: PackedByteArray = decrypt(path, [], true)
 	return not decrypted.is_empty()
