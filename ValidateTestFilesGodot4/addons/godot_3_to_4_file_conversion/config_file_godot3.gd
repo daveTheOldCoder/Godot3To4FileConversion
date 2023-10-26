@@ -16,7 +16,7 @@ static func load_encrypted(config_file: ConfigFile, path: String, key: PackedByt
 ## Loads a file, which was written in Godot 3 by ConfigFile.save_encrypted() or
 ## ConfigFile.save_encrypted_pass(), into the parameter [param config_file].
 ##[br][br]
-## The second parameter will be converted to a PackedByteArray using
+## The parameter [param password] will be converted to a PackedByteArray using
 ## String.md5_text().to_ascii_buffer().
 ##[br][br]
 ## Returns OK if successful.
