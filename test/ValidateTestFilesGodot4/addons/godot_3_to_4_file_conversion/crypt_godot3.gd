@@ -1,18 +1,18 @@
 class_name CryptGodot3
 ## Decrypt a file that was encrypted using Godot 3.
 ##
-## @tutorial: https://example.com
+## @tutorial: https://github.com/daveTheOldCoder/Godot3To4FileConversion#readme
 
 
-## Decrypts a file, which was written in Godot 3 using File.open_encrypted(),
+## Decrypt a file, which was written in Godot 3 using File.open_encrypted(),
 ## File.open_encrypted_with_pass(), ConfigFile.save_encrypted() or
-## ConfigFile.save_encrypted_pass(), and reencrypts the data to a second file, using
+## ConfigFile.save_encrypted_pass(), and reencrypt the data to a second file, using
 ## FileAccess.open_encrypted().
 ##[br][br]
 ## The parameter [param key] optimally should be 32 bytes long. If it's a different length,
 ## it will be truncated or zero-padded using PackedByteArray.resize(32).
 ##[br][br]
-## Returns OK if successful.
+## Return OK if successful.
 static func reencrypt(read_path: String, key: PackedByteArray, write_path: String) -> Error:
 
 	var decrypted: PackedByteArray = decrypt(read_path, key)
@@ -29,22 +29,22 @@ static func reencrypt(read_path: String, key: PackedByteArray, write_path: Strin
 	return OK
 
 
-## Decrypts a file, which was written in Godot 3 using File.open_encrypted(),
+## Decrypt a file, which was written in Godot 3 using File.open_encrypted(),
 ## File.open_encrypted_with_pass(), ConfigFile.save_encrypted() or
-## ConfigFile.save_encrypted_pass(), and reencrypts the data to a second file,
+## ConfigFile.save_encrypted_pass(), and reencrypt the data to a second file,
 ## using FileAccess.open_encrypted().
 ##[br][br]
 ## The parameter [param password] will be converted to a PackedByteArray using
 ## String.md5_text().to_ascii_buffer().
 ##[br][br]
-## Returns OK if successful.
+## Return OK if successful.
 static func reencrypt_with_pass(read_path: String, password: String, write_path: String) -> Error:
 	return reencrypt(read_path, password.md5_text().to_ascii_buffer(), write_path)
 
 
-## Decrypts a file, which was written in Godot 3 using File.open_encrypted(),
+## Decrypt a file, which was written in Godot 3 using File.open_encrypted(),
 ## File.open_encrypted_with_pass(), ConfigFile.save_encrypted() or
-## ConfigFile.save_encrypted_pass(), and returns the decrypted data.
+## ConfigFile.save_encrypted_pass(), and return the decrypted data.
 ##[br][br]
 ## The parameter [param key] optimally should be 32 bytes long. If it's a different length,
 ## it will be truncated or zero-padded using PackedByteArray.resize(32).
@@ -110,9 +110,9 @@ static func decrypt(path: String, key: PackedByteArray, ignore_md5: bool = false
 	return decrypted
 
 
-## Decrypts a file, which was written in Godot 3 using File.open_encrypted(),
+## Decrypt a file, which was written in Godot 3 using File.open_encrypted(),
 ## File.open_encrypted_with_pass(), ConfigFile.save_encrypted() or
-## ConfigFile.save_encrypted_pass(), and returns the decrypted data.
+## ConfigFile.save_encrypted_pass(), and return the decrypted data.
 ##[br][br]
 ## The parameter [param password] will be converted to a PackedByteArray using
 ## String.md5_text().to_ascii_buffer().
