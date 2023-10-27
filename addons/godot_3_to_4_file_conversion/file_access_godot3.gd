@@ -11,7 +11,7 @@ class_name FileAccessGodot3
 ##[br][br]
 ## The variable type [Object] is [b]not[/b] supported by this class.
 ##
-## @tutorial: https://example.com
+## @tutorial: https://github.com/daveTheOldCoder/Godot3To4FileConversion#readme
 
 ## Error code. May be accessed externally, but should [b]not[/b] be modified.
 var err: Error = OK
