@@ -1,6 +1,6 @@
 extends Node
 
-export var dir_writable: String = "/tmp/test_data"
+export var dir_writable: String = "/tmp/godot_storevar_test"
 
 const FILENAME_GODOT_3: String = "/godot3.dat"
 const FILENAME_GODOT_3_ENCRYPTED: String = "/godot3_encrypted.dat"
@@ -109,7 +109,6 @@ onready var debug: Label = $Panel/Debug
 
 func _ready() -> void:
 
-	# This project must be run in Godot 3.
 	if Engine.get_version_info()["major"] != 3:
 		button.hide()
 		debug.text = "This project requires Godot 3."

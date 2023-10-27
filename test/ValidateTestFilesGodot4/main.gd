@@ -129,7 +129,6 @@ const DATA: Dictionary = {
 
 func _ready() -> void:
 
-	# This project must be run in Godot 4.
 	if Engine.get_version_info()["major"] != 4:
 		button.hide()
 		debug.text = "This project requires Godot 4."
