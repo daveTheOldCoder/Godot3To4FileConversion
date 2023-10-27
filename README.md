@@ -58,6 +58,11 @@ Same as reencrypt(), except that the password is a String, rather than a PackedB
 
 Read data that was written with File.store_var() in Godot 3.
 
+##### Limitations
+
+* The variable type **RID** has not been tested. It is not known whether this class supports it.
+* The variable type **Object** is *not* supported by this class.
+
 ##### Methods
 
 * FileAccessGodot3 **\_init**(file\_access: FileAccess, tmp\_path: String = "", key: PackedByteArray = [])
@@ -72,6 +77,133 @@ Read data that was written in Godot 3 with File.store\_var().
 
 To use the addon in a Godot 4 project, copy the folder **addons/godot\_3\_to\_4\_file\_conversion** into the project folder.
 
+## Examples
+
+Here are some examples of using these classes. For brevity, limited error checking is done here. In practice, more error checking is usually warranted.
+
+### Example 1
+
+* Read an unencrypted Godot 3 file written using File.store\_var(), using FileAccessGodot3.get\_var().
+
+Godot 3 code that creates an unencrypted file using File and the store\_*() methods:
+
+	var i: int = 99
+	var f: float = 1.5
+	var s: String = "Hello"
+	var a: Array = [2, 4, 6]
+	var d: Dictionary = {"a": 100, "b": 200}
+	
+	var file := File.open("user://test_g3.dat", File.WRITE)
+
+	file.store_var(i)
+	file.store_float(f)
+	file.store_var(s)
+	file.store_32(i)
+	file.store_var(a)
+	file.store_var(d)
+
+	file.close()
+
+Godot 4 code that reads the file:
+
+	var file := FileAccess.open("user://test_g3.dat", FileAccess.READ)
+	
+	var file_g3 := FileAccessGodot3.new(file)
+
+	var i1: int = file_g3.get_var()
+	var f: float = file.get_float()
+	var s: String = file_g3.get_var()
+	var i2: int = file.get_32()
+	var a: Array = file_g3.get_var(a)
+	var d: Dictionary = file_g3.get_var(d)
+	
+	file.close()
+
+### Example 2
+
+* Read an encrypted Godot 3 file written using File.store\_var(), using CryptGodot3.reencrypt\_with\_pass() and FileAccessGodot3.get\_var().
+
+Godot 3 code that creates an encrypted file using File and the store\_*() methods:
+
+	var i: int = 99
+	var f: float = 1.5
+	var s: String = "Hello"
+	var a: Array = [2, 4, 6]
+	var d: Dictionary = {"a": 100, "b": 200}
+	
+	var file := File.open_encrypted_with_pass("user://test_g3.dat", File.WRITE, "secret")
+
+	file.store_var(i)
+	file.store_float(f)
+	file.store_var(s)
+	file.store_32(i)
+	file.store_var(a)
+	file.store_var(d)
+
+	file.close()
+
+Godot 4 code that reads the file:
+
+	CryptGodot3.reencrypt_with_pass("user://test_g3.dat", "secret", "user://test_g4.dat")
+	var file := FileAccess.open("user://test_g4.dat", FileAccess.READ, "secret")
+	
+	var file_g3 := FileAccessGodot3.new(file)
+
+	var i1: int = file_g3.get_var()
+	var f: float = file.get_float()
+	var s: String = file_g3.get_var()
+	var i2: int = file.get_32()
+	var a: Array = file_g3.get_var(a)
+	var d: Dictionary = file_g3.get_var(d)
+	
+	file.close()
+
+### Example 3
+
+* Read an encrypted Godot 3 file written using ConfigFile, using CryptGodot3.reencrypt\_with\_pass() and ConfigFile.
+
+Godot 3 code that creates an encrypted file using ConfigFile:
+
+	var d: Dictionary = {"a": 100, "b": 200}
+	var config_file := ConfigFile.new()
+	config_file.set_value("section", "key", d)
+	config_file.save_encrypted_pass("user://test_g3.dat", "secret")
+
+Godot 4 code that reads the file:
+
+	CryptGodot3.reencrypt_with_pass("user://test_g3.dat", "secret", "user://test_g4.dat")
+	var config_file := ConfigFile.new()
+	ConfigFile.load_encrypted_pass("user://test_g4.dat", "secret")
+	var data: Dictionary = config_file.get_value("section", "key")
+
+### Example 4
+
+* Read an encrypted Godot 3 file written using ConfigFile, using ConfigFileGodot3.load\_encrypted_pass(). This accomplishes the same result as the previous example, but doesn't create a converted file.
+
+Godot 3 code that creates an encrypted file using ConfigFile:
+
+	var d: Dictionary = {"a": 100, "b": 200}
+	var config_file := ConfigFile.new()
+	config_file.set_value("section", "key", d)
+	config_file.save_encrypted_pass("user://test.dat", "secret")
+
+Godot 4 code that reads the file:
+
+	var config_file := ConfigFile.new()
+	ConfigFileGodot3.load_encrypted_pass(config_file, "user://test.dat", "secret")
+	var data: Dictionary = config_file.get_value("section", "key")
+
+### Example 5
+
+* Use CryptGodot3.is_encrypted\_godot3() to check whether a file was encrypted using Godot 3.
+
+```
+if CryptGodot3.is_encrypted_godot3_file("user://test.dat"):
+	print("File is an encrypted Godot 3 file")
+else:
+	print("File is not an encrypted Godot 3 file")
+```
+
 ## Test
 
 The repository includes a test of the addon. If you want to repeat the test, import a Godot 3 project using the contents of the **CreateTestFilesGodot3** folder, and import a Godot 4 project using the contents of the **ValidateTestFilesGodot4** folder.
@@ -79,5 +211,7 @@ The repository includes a test of the addon. If you want to repeat the test, imp
 1. Open the **CreateTestFilesGodot3** project in the Godot editor using Godot 3. Select the Main node, and in the Inspector, set the property **Dir Writable** to a folder that will contain the test files. Then run the project and click the **Make Test Files** button. The **Succeeded** label will appear when the test files have been created.
 
 2. Copy the test files into the **ValidateTestFilesGodot4** project folder.
+
+3. Copy the folder **addons/godot\_3\_to\_4\_file\_conversion** into the **ValidateTestFilesGodot4** project folder.
 
 3. Open the **ValidateTestFilesGodot4** project in the Godot editor using Godot 4. Select the Main node, and in the Inspector, set the property **Dir Readable** to the path of the test files created above, and set the property **Dir Writable** to a folder that will contain additional test files created by this project. Then run the project and click the **Run Tests** button. The **All Tests Passed** label will appear if the tests succeeded.
