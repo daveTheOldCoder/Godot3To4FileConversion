@@ -258,9 +258,9 @@ func _convert_array_or_dictionary(var_type: Variant.Type, var_content: PackedByt
 func _convert_element(var_content: PackedByteArray, offset: int) -> Array[Variant]:
 
 	# Change stored Godot 4 variant type to Godot 4.
-	var var_type_godot_3: _Godot3_Variant_Type = var_content.decode_s32(offset) as _Godot3_Variant_Type
-	var var_type: Variant.Type = _convert_variant_type(var_type_godot_3)
-	#print_debug("variant type converted from %d to %d" % [var_type_godot_3, var_type])
+	var var_type_godot3: _Godot3_Variant_Type = var_content.decode_s32(offset) as _Godot3_Variant_Type
+	var var_type: Variant.Type = _convert_variant_type(var_type_godot3)
+	#print_debug("variant type converted from %d to %d" % [var_type_godot3, var_type])
 	var_content.encode_s32(offset, var_type)
 	
 	if var_type == TYPE_ARRAY or var_type == TYPE_DICTIONARY:
@@ -284,10 +284,10 @@ func _convert_element(var_content: PackedByteArray, offset: int) -> Array[Varian
 
 
 # Convert variant type from Godot 4 to Godot 4.
-func _convert_variant_type(var_type_godot_3: _Godot3_Variant_Type) -> Variant.Type:
-	if _MAP_TYPE_3_TO_4.has(var_type_godot_3):
-		return _MAP_TYPE_3_TO_4[var_type_godot_3]
+func _convert_variant_type(var_type_godot3: _Godot3_Variant_Type) -> Variant.Type:
+	if _MAP_TYPE_3_TO_4.has(var_type_godot3):
+		return _MAP_TYPE_3_TO_4[var_type_godot3]
 	else:
 		# This condition indicates an invalid/corrupt file.
-		print_debug("Unknown Godot 3 variant type: %d" % var_type_godot_3)
+		print_debug("Unknown Godot 3 variant type: %d" % var_type_godot3)
 		return TYPE_NIL

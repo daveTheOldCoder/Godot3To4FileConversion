@@ -8,29 +8,29 @@ extends Node
 const PASSWORD: String = "godot"
 
 # Test files created in Godot 3, using store_var().
-const FILENAME_GODOT_3: String = "/godot3.dat"
-const FILENAME_GODOT_3_ENCRYPTED: String = "/godot3_encrypted.dat"
+const FILENAME_GODOT3: String = "/godot3.dat"
+const FILENAME_GODOT3_ENCRYPTED: String = "/godot3_encrypted.dat"
 
 # Test files created in Godot 3 using ConfigFile.
-const FILENAME_GODOT_3_CONFIG_FILE: String = "/godot3_config_file.txt"
-const FILENAME_GODOT_3_CONFIG_FILE_ENCRYPTED: String = "/godot3_config_file_encrypted.dat"
+const FILENAME_GODOT3_CONFIG_FILE: String = "/godot3_config_file.txt"
+const FILENAME_GODOT3_CONFIG_FILE_ENCRYPTED: String = "/godot3_config_file_encrypted.dat"
 
 # Test files created in Godot 4, using store_var().
-const FILENAME_GODOT_4: String = "/godot4.dat"
-const FILENAME_GODOT_4_ENCRYPTED: String = "/godot4_encrypted.dat"
+const FILENAME_GODOT4: String = "/godot4.dat"
+const FILENAME_GODOT4_ENCRYPTED: String = "/godot4_encrypted.dat"
 
 # Test files created in Godot 4, using ConfigFile.
-const FILENAME_GODOT_4_CONFIG_FILE: String = "/godot4_config_file.dat"
-const FILENAME_GODOT_4_CONFIG_FILE_ENCRYPTED: String = "/godot4_config_file_encrypted.dat"
+const FILENAME_GODOT4_CONFIG_FILE: String = "/godot4_config_file.dat"
+const FILENAME_GODOT4_CONFIG_FILE_ENCRYPTED: String = "/godot4_config_file_encrypted.dat"
 
-var path_godot_3: String
-var path_godot_3_encrypted: String
-var path_godot_3_config_file: String
-var path_godot_3_config_file_encrypted: String
-var path_godot_4: String
-var path_godot_4_encrypted: String
-var path_godot_4_config_file: String
-var path_godot_4_config_file_encrypted: String
+var path_godot3: String
+var path_godot3_encrypted: String
+var path_godot3_config_file: String
+var path_godot3_config_file_encrypted: String
+var path_godot4: String
+var path_godot4_encrypted: String
+var path_godot4_config_file: String
+var path_godot4_config_file_encrypted: String
 
 var tmp_path: String
 
@@ -174,17 +174,17 @@ func _on_button_pressed() -> void:
 
 func init_paths() -> void:
 	# These files must already exist.
-	path_godot_3 = dir_readable + FILENAME_GODOT_3
-	path_godot_3_encrypted = dir_readable + FILENAME_GODOT_3_ENCRYPTED
-	path_godot_3_config_file = dir_readable + FILENAME_GODOT_3_CONFIG_FILE
-	path_godot_3_config_file_encrypted = dir_readable + FILENAME_GODOT_3_CONFIG_FILE_ENCRYPTED
+	path_godot3 = dir_readable + FILENAME_GODOT3
+	path_godot3_encrypted = dir_readable + FILENAME_GODOT3_ENCRYPTED
+	path_godot3_config_file = dir_readable + FILENAME_GODOT3_CONFIG_FILE
+	path_godot3_config_file_encrypted = dir_readable + FILENAME_GODOT3_CONFIG_FILE_ENCRYPTED
 	
 	# These files must be creatable/writable/deletable.
-	# They're only used for additional testing of CryptGodot3.is_encrypted_godot_3_file().
-	path_godot_4 = dir_writable + FILENAME_GODOT_4
-	path_godot_4_encrypted = dir_writable + FILENAME_GODOT_4_ENCRYPTED
-	path_godot_4_config_file = dir_writable + FILENAME_GODOT_4_CONFIG_FILE
-	path_godot_4_config_file_encrypted = dir_writable + FILENAME_GODOT_4_CONFIG_FILE_ENCRYPTED
+	# They're only used for additional testing of CryptGodot3.is_encrypted_godot3_file().
+	path_godot4 = dir_writable + FILENAME_GODOT4
+	path_godot4_encrypted = dir_writable + FILENAME_GODOT4_ENCRYPTED
+	path_godot4_config_file = dir_writable + FILENAME_GODOT4_CONFIG_FILE
+	path_godot4_config_file_encrypted = dir_writable + FILENAME_GODOT4_CONFIG_FILE_ENCRYPTED
 
 	# Create path names for temporary files.
 	randomize()
@@ -193,10 +193,10 @@ func init_paths() -> void:
 
 
 func write_test_files() -> void:
-	write_godot4_file(path_godot_4)
-	write_godot4_file(path_godot_4_encrypted, true)
-	write_godot4_config_file(path_godot_4_config_file)
-	write_godot4_config_file(path_godot_4_config_file_encrypted, true)
+	write_godot4_file(path_godot4)
+	write_godot4_file(path_godot4_encrypted, true)
+	write_godot4_config_file(path_godot4_config_file)
+	write_godot4_config_file(path_godot4_config_file_encrypted, true)
 
 
 # Write test data to file.
@@ -268,87 +268,87 @@ func run_tests() -> bool:
 	var ok: bool = true
 
 	# Test class FileAccessGodot3 with unencrypted file.
-	if run_test(path_godot_3):
-		print("********** run_tests: ALL DATA TESTS PASSED for file '%s'" % path_godot_3)
+	if run_test(path_godot3):
+		print("********** run_tests: ALL DATA TESTS PASSED for file '%s'" % path_godot3)
 	else:
 		ok = false
-		print("********** run_tests: ONE OR MORE TESTS FAILED for file '%s'" % path_godot_3)
+		print("********** run_tests: ONE OR MORE TESTS FAILED for file '%s'" % path_godot3)
 
 	# Test class FileAccessGodot3 with encrypted file.
-	if run_test(path_godot_3_encrypted, true):
-		print("********** run_tests: ALL DATA TESTS PASSED for file '%s'" % path_godot_3_encrypted)
+	if run_test(path_godot3_encrypted, true):
+		print("********** run_tests: ALL DATA TESTS PASSED for file '%s'" % path_godot3_encrypted)
 	else:
 		ok = false
-		print("********** run_tests: ONE OR MORE TESTS FAILED for file '%s'" % path_godot_3_encrypted)
+		print("********** run_tests: ONE OR MORE TESTS FAILED for file '%s'" % path_godot3_encrypted)
 
 	# Test class ConfigFile with unencrypted file.
 	# ConfigFile is Godot 3/4-compatible for unencoded (plain text) files. 
-	if run_config_file_test(path_godot_3_config_file):
-		print("********** run_tests: ALL DATA TESTS PASSED for file '%s'" % path_godot_3_config_file)
+	if run_config_file_test(path_godot3_config_file):
+		print("********** run_tests: ALL DATA TESTS PASSED for file '%s'" % path_godot3_config_file)
 	else:
 		ok = false
-		print("********** run_tests: ONE OR MORE TESTS FAILED for file '%s'" % path_godot_3_config_file)
+		print("********** run_tests: ONE OR MORE TESTS FAILED for file '%s'" % path_godot3_config_file)
 
 	# Test class ConfigFileGodot3 with encrypted file.
-	if run_config_file_test(path_godot_3_config_file_encrypted, true):
-		print("********** run_tests: ALL DATA TESTS PASSED for file '%s'" % path_godot_3_config_file_encrypted)
+	if run_config_file_test(path_godot3_config_file_encrypted, true):
+		print("********** run_tests: ALL DATA TESTS PASSED for file '%s'" % path_godot3_config_file_encrypted)
 	else:
 		ok = false
-		print("********** run_tests: ONE OR MORE TESTS FAILED for file '%s'" % path_godot_3_config_file_encrypted)
+		print("********** run_tests: ONE OR MORE TESTS FAILED for file '%s'" % path_godot3_config_file_encrypted)
 
-	# Test CryptGodot3.is_encrypted_godot_3_file().
-	if test_is_encrypted_godot_3_file():
-		print("********** run_tests: ALL TESTS PASSED for CryptGodot3.is_encrypted_godot_3_file()")
+	# Test CryptGodot3.is_encrypted_godot3_file().
+	if test_is_encrypted_godot3_file():
+		print("********** run_tests: ALL TESTS PASSED for CryptGodot3.is_encrypted_godot3_file()")
 	else:
 		ok = false
-		print("********** run_tests: ONE OR MORE TESTS FAILED for CryptGodot3.is_encrypted_godot_3_file()")
+		print("********** run_tests: ONE OR MORE TESTS FAILED for CryptGodot3.is_encrypted_godot3_file()")
 
 	return ok
 
 
-func test_is_encrypted_godot_3_file() -> bool:
+func test_is_encrypted_godot3_file() -> bool:
 
 	var is_godot3_encrypted: bool
 	var ok: bool = true
 
-	is_godot3_encrypted = CryptGodot3.is_encrypted_godot_3_file(path_godot_3)
+	is_godot3_encrypted = CryptGodot3.is_encrypted_godot3_file(path_godot3)
 	if is_godot3_encrypted:
-		print_debug("is_encrypted_godot_3_file failed on '%s'" % path_godot_3)
+		print_debug("is_encrypted_godot3_file failed on '%s'" % path_godot3)
 	ok = ok and not is_godot3_encrypted
 
-	is_godot3_encrypted = CryptGodot3.is_encrypted_godot_3_file(path_godot_3_encrypted)
+	is_godot3_encrypted = CryptGodot3.is_encrypted_godot3_file(path_godot3_encrypted)
 	if not is_godot3_encrypted:
-		print_debug("is_encrypted_godot_3_file failed on '%s'" % path_godot_3_encrypted)
+		print_debug("is_encrypted_godot3_file failed on '%s'" % path_godot3_encrypted)
 	ok = ok and is_godot3_encrypted
 
-	is_godot3_encrypted = CryptGodot3.is_encrypted_godot_3_file(path_godot_3_config_file)
+	is_godot3_encrypted = CryptGodot3.is_encrypted_godot3_file(path_godot3_config_file)
 	if is_godot3_encrypted:
-		print_debug("is_encrypted_godot_3_file failed on '%s'" % path_godot_3_config_file)
+		print_debug("is_encrypted_godot3_file failed on '%s'" % path_godot3_config_file)
 	ok = ok and not is_godot3_encrypted
 
-	is_godot3_encrypted = CryptGodot3.is_encrypted_godot_3_file(path_godot_3_config_file_encrypted)
+	is_godot3_encrypted = CryptGodot3.is_encrypted_godot3_file(path_godot3_config_file_encrypted)
 	if not is_godot3_encrypted:
-		print_debug("is_encrypted_godot_3_file failed on '%s'" % path_godot_3_config_file_encrypted)
+		print_debug("is_encrypted_godot3_file failed on '%s'" % path_godot3_config_file_encrypted)
 	ok = ok and is_godot3_encrypted
 
-	is_godot3_encrypted = CryptGodot3.is_encrypted_godot_3_file(path_godot_4)
+	is_godot3_encrypted = CryptGodot3.is_encrypted_godot3_file(path_godot4)
 	if is_godot3_encrypted:
-		print_debug("is_encrypted_godot_3_file failed on '%s'" % path_godot_4)
+		print_debug("is_encrypted_godot3_file failed on '%s'" % path_godot4)
 	ok = ok and not is_godot3_encrypted
 
-	is_godot3_encrypted = CryptGodot3.is_encrypted_godot_3_file(path_godot_4_encrypted)
+	is_godot3_encrypted = CryptGodot3.is_encrypted_godot3_file(path_godot4_encrypted)
 	if is_godot3_encrypted:
-		print_debug("is_encrypted_godot_3_file failed on '%s'" % path_godot_4_encrypted)
+		print_debug("is_encrypted_godot3_file failed on '%s'" % path_godot4_encrypted)
 	ok = ok and not is_godot3_encrypted
 
-	is_godot3_encrypted = CryptGodot3.is_encrypted_godot_3_file(path_godot_4_config_file)
+	is_godot3_encrypted = CryptGodot3.is_encrypted_godot3_file(path_godot4_config_file)
 	if is_godot3_encrypted:
-		print_debug("is_encrypted_godot_3_file failed on '%s'" % path_godot_4_config_file)
+		print_debug("is_encrypted_godot3_file failed on '%s'" % path_godot4_config_file)
 	ok = ok and not is_godot3_encrypted
 
-	is_godot3_encrypted = CryptGodot3.is_encrypted_godot_3_file(path_godot_4_config_file_encrypted)
+	is_godot3_encrypted = CryptGodot3.is_encrypted_godot3_file(path_godot4_config_file_encrypted)
 	if is_godot3_encrypted:
-		print_debug("is_encrypted_godot_3_file failed on '%s'" % path_godot_4_config_file_encrypted)
+		print_debug("is_encrypted_godot3_file failed on '%s'" % path_godot4_config_file_encrypted)
 	ok = ok and not is_godot3_encrypted
 
 	return ok
@@ -356,10 +356,10 @@ func test_is_encrypted_godot_3_file() -> bool:
 func delete_temporary_files() -> void:
 	var _err: Error = DirAccess.remove_absolute(tmp_path)
 	#debug.text += " [%d]" % _err
-	DirAccess.remove_absolute(path_godot_4)
-	DirAccess.remove_absolute(path_godot_4_encrypted)
-	DirAccess.remove_absolute(path_godot_4_config_file)
-	DirAccess.remove_absolute(path_godot_4_config_file_encrypted)
+	DirAccess.remove_absolute(path_godot4)
+	DirAccess.remove_absolute(path_godot4_encrypted)
+	DirAccess.remove_absolute(path_godot4_config_file)
+	DirAccess.remove_absolute(path_godot4_config_file_encrypted)
 
 
 # Open specified file path for reading, and return a new FileAccess object.
@@ -370,7 +370,7 @@ func open_file(path: String, encrypted: bool = false) -> FileAccess:
 	var err: Error
 
 	if encrypted:
-		if CryptGodot3.is_encrypted_godot_3_file(path):
+		if CryptGodot3.is_encrypted_godot3_file(path):
 			if CryptGodot3.reencrypt_with_pass(path, PASSWORD, tmp_path) != OK:
 				return null
 			#print_debug("tmp path='%s'" % file.get_path())
@@ -725,7 +725,7 @@ func run_config_file_test(path: String, encrypted: bool = false) -> bool:
 	var err: Error
 
 	if encrypted:
-		if CryptGodot3.is_encrypted_godot_3_file(path):
+		if CryptGodot3.is_encrypted_godot3_file(path):
 			err = ConfigFileGodot3.load_encrypted_pass(config_file, path, PASSWORD)
 			if err != OK:
 				print_debug("Failed to convert file '%s', error=%d" % [path, err])

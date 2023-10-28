@@ -2,15 +2,15 @@ extends Node
 
 export var dir_writable: String = "/tmp/godot_storevar_test"
 
-const FILENAME_GODOT_3: String = "/godot3.dat"
-const FILENAME_GODOT_3_ENCRYPTED: String = "/godot3_encrypted.dat"
-const FILENAME_GODOT_3_CONFIG_FILE: String = "/godot3_config_file.txt"
-const FILENAME_GODOT_3_CONFIG_FILE_ENCRYPTED: String = "/godot3_config_file_encrypted.dat"
+const FILENAME_GODOT3: String = "/godot3.dat"
+const FILENAME_GODOT3_ENCRYPTED: String = "/godot3_encrypted.dat"
+const FILENAME_GODOT3_CONFIG_FILE: String = "/godot3_config_file.txt"
+const FILENAME_GODOT3_CONFIG_FILE_ENCRYPTED: String = "/godot3_config_file_encrypted.dat"
 
-var path_godot_3: String
-var path_godot_3_encrypted: String
-var path_godot_3_config_file: String
-var path_godot_3_config_file_encrypted: String
+var path_godot3: String
+var path_godot3_encrypted: String
+var path_godot3_config_file: String
+var path_godot3_config_file_encrypted: String
 
 const PASSWORD: String = "godot"
 
@@ -159,10 +159,10 @@ func write_files() -> bool:
 
 	var ok: bool = true
 
-	path_godot_3 = dir_writable + FILENAME_GODOT_3
-	path_godot_3_encrypted = dir_writable + FILENAME_GODOT_3_ENCRYPTED
-	path_godot_3_config_file = dir_writable + FILENAME_GODOT_3_CONFIG_FILE
-	path_godot_3_config_file_encrypted = dir_writable + FILENAME_GODOT_3_CONFIG_FILE_ENCRYPTED
+	path_godot3 = dir_writable + FILENAME_GODOT3
+	path_godot3_encrypted = dir_writable + FILENAME_GODOT3_ENCRYPTED
+	path_godot3_config_file = dir_writable + FILENAME_GODOT3_CONFIG_FILE
+	path_godot3_config_file_encrypted = dir_writable + FILENAME_GODOT3_CONFIG_FILE_ENCRYPTED
 
 	var directory: Directory = Directory.new() 
 	if not directory.dir_exists(dir_writable):
@@ -172,10 +172,10 @@ func write_files() -> bool:
 			print_debug("Failed to create directory '%s', err=%d" % [dir_writable, err])
 			return false
 
-	ok = ok and write_file(path_godot_3)
-	ok = ok and write_file(path_godot_3_encrypted, true)
-	ok = ok and write_config_file(path_godot_3_config_file)
-	ok = ok and write_config_file(path_godot_3_config_file_encrypted, true)
+	ok = ok and write_file(path_godot3)
+	ok = ok and write_file(path_godot3_encrypted, true)
+	ok = ok and write_config_file(path_godot3_config_file)
+	ok = ok and write_config_file(path_godot3_config_file_encrypted, true)
 	
 	return ok
 

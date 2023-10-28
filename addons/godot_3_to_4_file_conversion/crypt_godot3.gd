@@ -132,8 +132,8 @@ static func decrypt_with_pass(path: String, password: String, ignore_md5: bool =
 ## Godot 4, or ConfigFile.save_*() in Godot 3 or Godot 4.
 ##[br][br]
 ## It might [b]not[/b] return an accurate result for other files.
-static func is_encrypted_godot_3_file(path: String) -> bool:
-	#print_debug("is_encrypted_godot_3_file, path '%s'" % path)
+static func is_encrypted_godot3_file(path: String) -> bool:
+	#print_debug("is_encrypted_godot3_file, path '%s'" % path)
 	# In this case, the password isn't needed or provided, and the MD5 check cannot be done without
 	# the correct password, since the MD5 is computed on the decrypted data.
 	var decrypted: PackedByteArray = decrypt(path, [], true)

@@ -41,7 +41,7 @@ Decrypt a file, which was written in Godot 3 using File.open\_encrypted(), File.
 
 Same as decrypt(), except that the password is a String, rather than a PackedByteArray.
 
-* bool **is\_encrypted\_godot\_3\_file**(path: String) static
+* bool **is\_encrypted\_godot3\_file**(path: String) static
 
 Return *true* if the file was created with encryption in Godot 3.
 
@@ -199,7 +199,7 @@ Godot 4 code that reads the file:
 
 ### Example 5
 
-* Use CryptGodot3.is_encrypted\_godot3() to check whether a file was encrypted using Godot 3.
+* Use CryptGodot3.is\_encrypted\_godot3_file() to check whether a file was encrypted using Godot 3.
 
 ```
 if CryptGodot3.is_encrypted_godot3_file("user://test.dat"):
