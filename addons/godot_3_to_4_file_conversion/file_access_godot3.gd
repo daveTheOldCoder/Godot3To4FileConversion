@@ -105,9 +105,9 @@ const _MAP_TYPE_3_TO_4: Dictionary = {
 ## The optional parameter [param tmp_path] is the absolute path for the temporary file used by
 ## the get_var() method. Its default value is an empty String.
 ## [br][br]
-## The optional parameter [param key] is the encryption key for the temporary file. It should
-## be 32 bytes long. If it's a different length, it will be truncated or zero-padded
-## using PackedByteArray.resize(32). Its default value is an empty PackedByteArray.
+## The optional parameter [param key] is the encryption key for the temporary file. Its length will
+## be adjusted to 32 bytes, if needed, by truncation or zero-padding using
+## PackedByteArray.resize(32). Its default value is an empty PackedByteArray.
 ## [br][br]
 ## If either optional parameter is omitted, or specified as its default value, an internal value
 ## will be generated using a timestamp and random number.
@@ -143,12 +143,12 @@ func _make_key() -> PackedByteArray:
 ## Read data that was written in Godot 3 with File.store_var().
 ## [br][br]
 ## Creates and deletes a temporary file.
-## The temporary file is placed in the directory "user://" and the filename is
-## generated using a timestamp and a random number.
+## The temporary file is placed in the directory "user://" with the extension ".tmp", and the
+## filename is generated using a timestamp and a random number.
 ## The temporary file is encrypted. The password is generated using a timestamp
-## and a random number. 
-## The path and/or encryption password of the temporary file can optionally be
-## overridden using parameters in the class constructor (see above).
+## and a random number.
+## Either the path or encryption password may be overridden using parameters in the class
+## constructor (see above).
 ## [br][br]
 ## [i]The parameter [param allow_objects] is not supported.[/i]
 func get_var() -> Variant:
@@ -161,7 +161,7 @@ func get_var() -> Variant:
 	# closed, re-opened in READ mode and read. If the file were not encrypted,
 	# it would only need to be opened once, in WRITE_READ mode, using seek()
 	# to rewind the file for reading.
-	
+
 	_tmp_file = FileAccess.open_encrypted(_tmp_path, FileAccess.WRITE, _key)
 	err = OK if _tmp_file != null else FileAccess.get_open_error()
 	if err != OK:
@@ -172,9 +172,9 @@ func get_var() -> Variant:
 
 	# Read a variable from _file_access and write converted variable to _tmp_file.
 	_convert_variable()
-	
+
 	_tmp_file.close()
-	
+
 	_tmp_file = FileAccess.open_encrypted(_tmp_path, FileAccess.READ, _key)
 	err = OK if _tmp_file != null else FileAccess.get_open_error()
 	if err != OK:
@@ -186,11 +186,11 @@ func get_var() -> Variant:
 	# Read converted variable from _tmp_file.
 	var v: Variant = _tmp_file.get_var()
 	#print_debug("v=", v)
-	
+
 	_tmp_file.close()
-	
-	# Delete the temporary file so tha the user doesn't have to, which makes the
-	# class easier to use.
+
+	# Delete the temporary file so that the user doesn't have to delete it,
+	# which makes the class easier to use.
 	# I'm giving ease-of-use precedence over efficiency.
 	DirAccess.remove_absolute(_tmp_path)
 
@@ -202,17 +202,17 @@ func _convert_variable() -> void:
 
 	#test
 	#var var_start_position: int = _file_access.get_position()
-	 
+
 	# Length field: Length is four bytes.
 	# The length includes the variant type field and the variable comtent.
 	var var_length: int = _file_access.get_32()
 	_tmp_file.store_32(var_length)
-	
+
 	# Variant type field: Length is four bytes.
 	var var_type: Variant.Type =\
 			_convert_variant_type(_file_access.get_32() as _Godot3_Variant_Type)
 	_tmp_file.store_32(var_type)
-	
+
 	# Variable content: Length is value of length field less four bytes.
 	var var_content: PackedByteArray = _file_access.get_buffer(var_length - 4)
 
@@ -229,9 +229,9 @@ func _convert_variable() -> void:
 func _convert_array_or_dictionary(var_type: Variant.Type, var_content: PackedByteArray) -> PackedByteArray:
 
 	assert(var_type == TYPE_ARRAY or var_type == TYPE_DICTIONARY)
-	
+
 	var offset: int = 0
-	
+
 	#print_debug("_level=%d var_content=%s" % [_level, var_content])
 	var num_elements: int = var_content.decode_s32(offset)
 	offset += 4
@@ -249,7 +249,7 @@ func _convert_array_or_dictionary(var_type: Variant.Type, var_content: PackedByt
 			updated_var_content_and_offset = _convert_element(var_content, offset)
 			var_content = updated_var_content_and_offset[0] as PackedByteArray
 			offset = updated_var_content_and_offset[1] as int
-	
+
 	return var_content
 
 
@@ -262,12 +262,12 @@ func _convert_element(var_content: PackedByteArray, offset: int) -> Array[Varian
 	var var_type: Variant.Type = _convert_variant_type(var_type_godot3)
 	#print_debug("variant type converted from %d to %d" % [var_type_godot3, var_type])
 	var_content.encode_s32(offset, var_type)
-	
+
 	if var_type == TYPE_ARRAY or var_type == TYPE_DICTIONARY:
 		# Perform indirect recursive call to convert element that's an Array or Dictionary.
 		# Use offset+4 to skip over type field.
 		var buf: PackedByteArray = _convert_array_or_dictionary(var_type, var_content.slice(offset + 4))
-		
+
 		# Copy conversion result back into original buffer.
 		# Use offset+4 to skip over type field.
 		for j in range(buf.size()):
