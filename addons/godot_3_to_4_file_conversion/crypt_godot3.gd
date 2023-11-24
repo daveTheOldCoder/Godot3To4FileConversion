@@ -91,7 +91,7 @@ static func decrypt(path: String, key: PackedByteArray, ignore_md5: bool = false
 	decrypted.resize(length)
 
 	file.close()
-	
+
 	if not ignore_md5:
 		# Check MD5 hash.
 		var hashing_context := HashingContext.new()
