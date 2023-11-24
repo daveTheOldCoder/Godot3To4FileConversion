@@ -1,6 +1,6 @@
 extends Node
 
-export var dir_writable: String = "/tmp/godot_storevar_test"
+export var dir_writable: String = "res://test_data"
 
 const FILENAME_GODOT3: String = "/godot3.dat"
 const FILENAME_GODOT3_ENCRYPTED: String = "/godot3_encrypted.dat"
