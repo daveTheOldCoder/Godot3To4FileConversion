@@ -62,6 +62,7 @@ Read data that was written with File.store_var() in Godot 3.
 
 * The variable type **RID** has not been tested. It is not known whether this class supports it.
 * The variable type **Object** is *not* supported by this class.
+* The **FileAccessGodot3.get_var()** method creates a temporary file, so the platform has to support file creation/writing/deletion.
 
 ##### Methods
 
@@ -79,7 +80,7 @@ To use the addon in a Godot 4 project, copy the folder **addons/godot\_3\_to\_4\
 
 ## Examples
 
-Here are some examples of using these classes. For brevity, limited error checking is done here. In practice, more error checking is usually warranted.
+Here are some examples of using these classes. For brevity, the code here has no error checks. In practice, checking method calls for errors is usually desirable.
 
 ### Example 1
 
@@ -90,6 +91,7 @@ Godot 3 code that creates an unencrypted file using File and the store\_*() meth
 	var i: int = 99
 	var f: float = 1.5
 	var s: String = "Hello"
+	var j: int = -2
 	var a: Array = [2, 4, 6]
 	var d: Dictionary = {"a": 100, "b": 200}
 	
@@ -98,7 +100,7 @@ Godot 3 code that creates an unencrypted file using File and the store\_*() meth
 	file.store_var(i)
 	file.store_float(f)
 	file.store_var(s)
-	file.store_32(i)
+	file.store_32(j)
 	file.store_var(a)
 	file.store_var(d)
 
@@ -110,10 +112,10 @@ Godot 4 code that reads the file:
 	
 	var file_g3 := FileAccessGodot3.new(file)
 
-	var i1: int = file_g3.get_var()
+	var i: int = file_g3.get_var()
 	var f: float = file.get_float()
 	var s: String = file_g3.get_var()
-	var i2: int = file.get_32()
+	var j: int = file.get_32()
 	var a: Array = file_g3.get_var(a)
 	var d: Dictionary = file_g3.get_var(d)
 	
@@ -128,6 +130,7 @@ Godot 3 code that creates an encrypted file using File and the store\_*() method
 	var i: int = 99
 	var f: float = 1.5
 	var s: String = "Hello"
+	var j: int = -2
 	var a: Array = [2, 4, 6]
 	var d: Dictionary = {"a": 100, "b": 200}
 	
@@ -136,7 +139,7 @@ Godot 3 code that creates an encrypted file using File and the store\_*() method
 	file.store_var(i)
 	file.store_float(f)
 	file.store_var(s)
-	file.store_32(i)
+	file.store_32(j)
 	file.store_var(a)
 	file.store_var(d)
 
@@ -150,10 +153,10 @@ Godot 4 code that reads the file:
 	
 	var file_g3 := FileAccessGodot3.new(file)
 
-	var i1: int = file_g3.get_var()
+	var i: int = file_g3.get_var()
 	var f: float = file.get_float()
 	var s: String = file_g3.get_var()
-	var i2: int = file.get_32()
+	var j: int = file.get_32()
 	var a: Array = file_g3.get_var(a)
 	var d: Dictionary = file_g3.get_var(d)
 	
@@ -212,7 +215,11 @@ else:
 
 The repository includes a test of the addon. If you want to repeat the test, import a Godot 3 project using the contents of the **CreateTestFilesGodot3** folder, and import a Godot 4 project using the contents of the **ValidateTestFilesGodot4** folder.
 
-1. Open the **CreateTestFilesGodot3** project in the Godot editor using Godot 3. Select the Main node, and in the Inspector, set the property **Dir Writable** to a folder that will contain the test files. Then run the project and click the **Make Test Files** button. The **Succeeded** label will appear when the test files have been created.
+1. Open the **CreateTestFilesGodot3** project in the Godot editor using Godot 3. Select the Main node, and in the Inspector, set the property **Dir Writable** to a folder that will contain the test files. Then run the project and click the **Make Test Files** button. The **Succeeded** label will appear when the test files have been created. The names of the test files are:
+	* godot3.dat
+	* godot3_encrypted.dat
+	* godot3\_config\_file.txt
+	* godot3\_config\_file\_encrypted.dat
 
 2. Copy the test files into the **ValidateTestFilesGodot4** project folder.
 
