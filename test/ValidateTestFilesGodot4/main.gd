@@ -132,7 +132,7 @@ func _ready() -> void:
 	if Engine.get_version_info()["major"] != 4:
 		button.hide()
 		debug.text = "This project requires Godot 4."
-	
+
 	# Hide test result.
 	passed.modulate.a = 0.0
 	failed.modulate.a = 0.0
@@ -178,7 +178,7 @@ func init_paths() -> void:
 	path_godot3_encrypted = dir_readable + FILENAME_GODOT3_ENCRYPTED
 	path_godot3_config_file = dir_readable + FILENAME_GODOT3_CONFIG_FILE
 	path_godot3_config_file_encrypted = dir_readable + FILENAME_GODOT3_CONFIG_FILE_ENCRYPTED
-	
+
 	# These files must be creatable/writable/deletable.
 	# They're only used for additional testing of CryptGodot3.is_encrypted_godot3_file().
 	path_godot4 = dir_writable + FILENAME_GODOT4
@@ -216,7 +216,7 @@ func write_godot4_file(path: String, encrypted: bool = false) -> void:
 	else:
 		print_debug("Failed to open file '%s' for writing, error=%d" % [path, err])
 		return
-	
+
 	file.store_var(I)
 	file.store_8(I)
 	file.store_16(I)
@@ -282,7 +282,7 @@ func run_tests() -> bool:
 		print("********** run_tests: ONE OR MORE TESTS FAILED for file '%s'" % path_godot3_encrypted)
 
 	# Test class ConfigFile with unencrypted file.
-	# ConfigFile is Godot 3/4-compatible for unencoded (plain text) files. 
+	# ConfigFile is Godot 3/4-compatible for unencoded (plain text) files.
 	if run_config_file_test(path_godot3_config_file):
 		print("********** run_tests: ALL DATA TESTS PASSED for file '%s'" % path_godot3_config_file)
 	else:
@@ -392,10 +392,10 @@ func open_file(path: String, encrypted: bool = false) -> FileAccess:
 func run_test(path: String, encrypted: bool = false) -> bool:
 
 	#print_debug("run_test(%s)" % path)
-	
+
 	var err: Error
 	var ok: bool = true
-	
+
 	var file: FileAccess = open_file(path, encrypted)
 	if file == null:
 		return false
@@ -410,121 +410,121 @@ func run_test(path: String, encrypted: bool = false) -> bool:
 	var b: Variant = file_godot3.get_var()
 	err = file.get_error()
 	if not (err == OK and b is bool and b == B):
-		print("Data test failed: B") 
+		print("Data test failed: B")
 		ok = false
 
 	var i: Variant = file_godot3.get_var()
 	err = file.get_error()
 	if not (err == OK and i is int and i == I):
-		print("Data test failed: I") 
+		print("Data test failed: I")
 		ok = false
 
 	var i8: Variant = file.get_8()
 	err = file.get_error()
 	if not (err == OK and i8 is int and i8 == I):
-		print("Data test failed: I8") 
+		print("Data test failed: I8")
 		ok = false
 
 	var i16: Variant = file.get_16()
 	err = file.get_error()
 	if not (err == OK and i16 is int and i16 == I):
-		print("Data test failed: I16") 
+		print("Data test failed: I16")
 		ok = false
 
 	var i32: Variant = file.get_32()
 	err = file.get_error()
 	if not (err == OK and i32 is int and i32 == I):
-		print("Data test failed: I32") 
+		print("Data test failed: I32")
 		ok = false
 
 	var i64: Variant = file.get_64()
 	err = file.get_error()
 	if not (err == OK and i64 is int and i64 == I):
-		print("Data test failed: I64") 
+		print("Data test failed: I64")
 		ok = false
 
 	var f: Variant = file_godot3.get_var()
 	err = file.get_error()
 	if not (err == OK and f is float and f == F):
-		print("Data test failed: F") 
+		print("Data test failed: F")
 		ok = false
 
 	var f_double: Variant = file.get_double()
 	err = file.get_error()
 	if not (err == OK and f_double is float and f_double == F):
-		print("Data test failed: F_double") 
+		print("Data test failed: F_double")
 		ok = false
 
 	var f_float: Variant = file.get_float()
 	err = file.get_error()
 	if not (err == OK and f_float is float and f_float == F):
-		print("Data test failed: F_float") 
+		print("Data test failed: F_float")
 		ok = false
 
 	var f_real: Variant = file.get_real()
 	err = file.get_error()
 	if not (err == OK and f_real is float and f_real == F):
-		print("Data test failed: F_real") 
+		print("Data test failed: F_real")
 		ok = false
 
 	var s: Variant = file_godot3.get_var()
 	err = file.get_error()
 	if not (err == OK and s is String and s == S):
-		print("Data test failed: S") 
+		print("Data test failed: S")
 		ok = false
 
 	var s_pascal_string: Variant = file.get_pascal_string()
 	err = file.get_error()
 	if not (err == OK and s_pascal_string is String and s_pascal_string == S):
-		print("Data test failed: S_pascal_string") 
+		print("Data test failed: S_pascal_string")
 		ok = false
 
 	var v: Variant = file_godot3.get_var()
 	err = file.get_error()
 	if not (err == OK and v is Vector2 and v.x == V.x and v.y == V.y):
-		print("Data test failed: V") 
+		print("Data test failed: V")
 		ok = false
 
 	var r2: Variant = file_godot3.get_var()
 	err = file.get_error()
 	if not (err == OK and r2 is Rect2 and r2 == R2):
-		print("Data test failed: R2") 
+		print("Data test failed: R2")
 		ok = false
 
 	var v3: Variant = file_godot3.get_var()
 	err = file.get_error()
 	if not (err == OK and v3 is Vector3 and v3 == V3):
-		print("Data test failed: V3") 
+		print("Data test failed: V3")
 		ok = false
 
 	var t2d: Variant = file_godot3.get_var()
 	err = file.get_error()
 	if not (err == OK and t2d is Transform2D and t2d == T2D):
-		print("Data test failed: T2D") 
+		print("Data test failed: T2D")
 		ok = false
 
 	var p: Variant = file_godot3.get_var()
 	err = file.get_error()
 	if not (err == OK and p is Plane and p == P):
-		print("Data test failed: P") 
+		print("Data test failed: P")
 		ok = false
 
 	var q: Variant = file_godot3.get_var()
 	err = file.get_error()
 	if not (err == OK and q is Quaternion and q == Q):
-		print("Data test failed: Q") 
+		print("Data test failed: Q")
 		ok = false
 
 	var aabb: Variant = file_godot3.get_var()
 	err = file.get_error()
 	if not (err == OK and aabb is AABB and aabb == AABB_):
-		print("Data test failed: AABB_") 
+		print("Data test failed: AABB_")
 		ok = false
 
 	var basis: Variant = file_godot3.get_var()
 	err = file.get_error()
 	if not (err == OK and basis is Basis and basis == BASIS_):
-		print("Data test failed: BASIS_") 
+		print("Data test failed: BASIS_")
 		ok = false
 
 	var t3d: Variant = file_godot3.get_var()
@@ -536,19 +536,19 @@ func run_test(path: String, encrypted: bool = false) -> bool:
 	var c: Variant = file_godot3.get_var()
 	err = file.get_error()
 	if not (err == OK and c is Color and c == C):
-		print("Data test failed: C") 
+		print("Data test failed: C")
 		ok = false
 
 	var np: Variant = file_godot3.get_var()
 	err = file.get_error()
 	if not (err == OK and np is NodePath and np == NP):
-		print("Data test failed: NP") 
+		print("Data test failed: NP")
 		ok = false
 
 	#var rid: Variant = file_godot3.get_var()
 	#err = file.get_error()
 	#if not (err == OK and rid is RID and rid.get_id() == RID_.get_id()):
-		#print("Data test failed: RID_") 
+		#print("Data test failed: RID_")
 		##print_debug("err=%d type=%d rid=%s RID_=%s rid.get_id() RID_.get_id()" % [err, typeof(rid), rid, RID_, rid.get_id(), RID_.get_id()])
 		##print_debug("err=%d type=%d rid=%s RID_=%s RID_.get_id()" % [err, typeof(rid), rid, RID_, RID_.get_id()])
 		#print_debug("err=%d type=%d rid=%s RID_=%s" % [err, typeof(rid), rid, RID_])
@@ -557,7 +557,7 @@ func run_test(path: String, encrypted: bool = false) -> bool:
 	#var o: Variant = file_godot3.get_var(true)
 	#err = file.get_error()
 	#if not (err == OK and o is Node2D and o == O):
-		#print("Data test failed: O") 
+		#print("Data test failed: O")
 		#print_debug("err=%d type=%d o=%s O_=%s" % [err, typeof(o), o, O])
 		#ok = false
 	#else:
@@ -566,67 +566,67 @@ func run_test(path: String, encrypted: bool = false) -> bool:
 	var d: Variant = file_godot3.get_var()
 	err = file.get_error()
 	if not (err == OK and d is Dictionary and objects_equal(d, D)):
-		print("Data test failed: D") 
+		print("Data test failed: D")
 		ok = false
 
 	var a: Variant = file_godot3.get_var()
 	err = file.get_error()
 	if not (err == OK and a is Array and objects_equal(a, A)):
-		print("Data test failed: A") 
+		print("Data test failed: A")
 		ok = false
 
 	var pba: Variant = file_godot3.get_var()
 	err = file.get_error()
 	if not (err == OK and pba is PackedByteArray and pba == PBA):
-		print("Data test failed: PBA") 
+		print("Data test failed: PBA")
 		ok = false
 
 	var pba2: Variant = file.get_buffer(PBA.size())
 	err = file.get_error()
 	if not (err == OK and pba2 is PackedByteArray and pba2 == PBA):
-		print("Data test failed: PBA2") 
+		print("Data test failed: PBA2")
 		ok = false
 
 	var pia: Variant = file_godot3.get_var()
 	err = file.get_error()
 	if not (err == OK and pia is PackedInt32Array and pia == PIA):
-		print("Data test failed: PIA") 
+		print("Data test failed: PIA")
 		ok = false
 
 	var pfa: Variant = file_godot3.get_var()
 	err = file.get_error()
 	if not (err == OK and pfa is PackedFloat32Array and pfa == PFA):
-		print("Data test failed: PFA") 
+		print("Data test failed: PFA")
 		ok = false
 
 	var psa: Variant = file_godot3.get_var()
 	err = file.get_error()
 	if not (err == OK and psa is PackedStringArray and psa == PSA):
-		print("Data test failed: PSA") 
+		print("Data test failed: PSA")
 		ok = false
 
 	var psa2: Variant = file.get_csv_line()
 	err = file.get_error()
 	if not (err == OK and psa2 is PackedStringArray and psa2 == PSA):
-		print("Data test failed: PSA2") 
+		print("Data test failed: PSA2")
 		ok = false
 
 	var pv2a: Variant = file_godot3.get_var()
 	err = file.get_error()
 	if not (err == OK and pv2a is PackedVector2Array and pv2a == PV2A):
-		print("Data test failed: PV2A") 
+		print("Data test failed: PV2A")
 		ok = false
 
 	var pv3a: Variant = file_godot3.get_var()
 	err = file.get_error()
 	if not (err == OK and pv3a is PackedVector3Array and pv3a == PV3A):
-		print("Data test failed: PV3A") 
+		print("Data test failed: PV3A")
 		ok = false
 
 	var pca: Variant = file_godot3.get_var()
 	err = file.get_error()
 	if not (err == OK and pca is PackedColorArray and pca == PCA):
-		print("Data test failed: PC") 
+		print("Data test failed: PC")
 		ok = false
 
 # Additional tests for nested Arrays and Dictionaries.
@@ -634,37 +634,37 @@ func run_test(path: String, encrypted: bool = false) -> bool:
 	var a2: Variant = file_godot3.get_var()
 	err = file.get_error()
 	if not(err == OK and a2 is Array and objects_equal(a2, A2)):
-		print("Data test failed: A2") 
+		print("Data test failed: A2")
 		ok = false
 
 	var a3: Variant = file_godot3.get_var()
 	err = file.get_error()
 	if not(err == OK and a3 is Array and objects_equal(a3, A3)):
-		print("Data test failed: A3") 
+		print("Data test failed: A3")
 		ok = false
 
 	var a4: Variant = file_godot3.get_var()
 	err = file.get_error()
 	if not(err == OK and a4 is Array and objects_equal(a4, A4)):
-		print("Data test failed: A4") 
+		print("Data test failed: A4")
 		ok = false
 
 	var a5: Variant = file_godot3.get_var()
 	err = file.get_error()
 	if not(err == OK and a5 is Array and objects_equal(a5, A5)):
-		print("Data test failed: A5") 
+		print("Data test failed: A5")
 		ok = false
 
 	var a6: Variant = file_godot3.get_var()
 	err = file.get_error()
 	if not(err == OK and a6 is Array and objects_equal(a6, A6)):
-		print("Data test failed: A6") 
+		print("Data test failed: A6")
 		ok = false
 
 	var a7: Variant = file_godot3.get_var()
 	err = file.get_error()
 	if not(err == OK and a6 is Array and objects_equal(a7, A7)):
-		print("Data test failed: A7") 
+		print("Data test failed: A7")
 		ok = false
 
 	var d2: Variant = file_godot3.get_var()
@@ -710,9 +710,9 @@ func run_test(path: String, encrypted: bool = false) -> bool:
 		ok = false
 
 	#print_debug("path=%s encrypted=%s" % [file.get_path(), encrypted])
-	
+
 	file.close()
-	
+
 	return ok
 
 
@@ -721,7 +721,7 @@ func run_test(path: String, encrypted: bool = false) -> bool:
 func run_config_file_test(path: String, encrypted: bool = false) -> bool:
 
 	var config_file: ConfigFile = ConfigFile.new()
-	
+
 	var err: Error
 
 	if encrypted:
@@ -747,47 +747,47 @@ func run_config_file_test(path: String, encrypted: bool = false) -> bool:
 	if data == null:
 		print_debug("Failed to extract data from file")
 		return false
-	
+
 	#print_debug("data=", data)
-	
+
 	var ok: bool = true
-	
+
 	if not data is Dictionary:
-		print_debug("Data test failed: data type") 
+		print_debug("Data test failed: data type")
 		ok = false
-	
+
 	if not data.has_all(DATA.keys()):
-		print_debug("Data test failed: missing key(s)") 
+		print_debug("Data test failed: missing key(s)")
 		ok = false
 
 	if not (data["I"] is int and data["I"] == I):
-		print_debug("Data test failed: I") 
+		print_debug("Data test failed: I")
 		ok = false
 
 	if not (data["F"] is float and data["F"] == F):
-		print_debug("Data test failed: F") 
+		print_debug("Data test failed: F")
 		ok = false
 
 	if not (data["B"] is bool and data["B"] == B):
-		print_debug("Data test failed: B") 
+		print_debug("Data test failed: B")
 		ok = false
 
 	if not (data["S"] is String and data["S"] == S):
-		print_debug("Data test failed: S") 
+		print_debug("Data test failed: S")
 		ok = false
 
 	if not (data["V"] is Vector2 and data["V"].x == V.x and data["V"].y == V.y):
-		print_debug("Data test failed: V") 
+		print_debug("Data test failed: V")
 		ok = false
 
 	if not (data["A"] is Array and data["A"].size() == A.size()\
 			and data["A"][0] == A[0] and data["A"][1] == A[1]):
-		print_debug("Data test failed: A") 
+		print_debug("Data test failed: A")
 		ok = false
 
 	if not (data["D"] is Dictionary and data["D"].size() == D.size()\
 			and data["D"]["a"] == D["a"] and data["D"]["b"] == D["b"]):
-		print_debug("Data test failed: D") 
+		print_debug("Data test failed: D")
 		ok = false
 
 	return ok
@@ -801,7 +801,7 @@ func objects_equal(a: Variant, b: Variant) -> bool:
 
 	if typeof(a) != typeof(b):
 		return false
-	
+
 	if typeof(a) == TYPE_ARRAY:
 		if a.size() != b.size():
 			return false
@@ -823,11 +823,10 @@ func objects_equal(a: Variant, b: Variant) -> bool:
 
 
 func make_tmp_path_name() -> String:
-	var cache_dir: String = "user://"
 	# Replace "." with "_" for better filename portability.
 	var timestamp: String = str(Time.get_unix_time_from_system()).replace(".", "_")
 	var random_value: int = randi() % 1_000_000
-	return "%s/%s_%06d.tmp" % [cache_dir, timestamp, random_value]
+	return "%s/%s_%06d.tmp" % [dir_writable, timestamp, random_value]
 
 
 #test
