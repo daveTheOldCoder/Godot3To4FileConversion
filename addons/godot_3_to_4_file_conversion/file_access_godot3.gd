@@ -204,7 +204,7 @@ func _convert_variable() -> void:
 	#var var_start_position: int = _file_access.get_position()
 
 	# Length field: Length is four bytes.
-	# The length includes the variant type field and the variable comtent.
+	# The length includes the variant type field and the variable content.
 	var var_length: int = _file_access.get_32()
 	_tmp_file.store_32(var_length)
 
