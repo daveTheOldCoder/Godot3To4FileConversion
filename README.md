@@ -152,7 +152,7 @@ Godot 4 code that reads the file:
 
 	CryptGodot3.reencrypt_with_pass("user://test_g3.dat", "secret", "user://test_g4.dat")
 
-	var file := FileAccess.open("user://test_g4.dat", FileAccess.READ, "secret")
+	var file := FileAccess.open_encrypted_with_pass("user://test_g4.dat", FileAccess.READ, "secret")
 	
 	var file_g3 := FileAccessGodot3.new(file)
 
