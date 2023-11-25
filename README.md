@@ -119,8 +119,8 @@ Godot 4 code that reads the file:
 	var f: float = file.get_float()
 	var s: String = file_g3.get_var()
 	var j: int = file.get_32()
-	var a: Array = file_g3.get_var(a)
-	var d: Dictionary = file_g3.get_var(d)
+	var a: Array = file_g3.get_var()
+	var d: Dictionary = file_g3.get_var()
 	
 	file.close()
 
@@ -160,8 +160,8 @@ Godot 4 code that reads the file:
 	var f: float = file.get_float()
 	var s: String = file_g3.get_var()
 	var j: int = file.get_32()
-	var a: Array = file_g3.get_var(a)
-	var d: Dictionary = file_g3.get_var(d)
+	var a: Array = file_g3.get_var()
+	var d: Dictionary = file_g3.get_var()
 	
 	file.close()
 
