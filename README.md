@@ -6,7 +6,8 @@ Specifically, it provides solutions for these problems:<br>
 * Encryption change in class ConfigFile<br>
 * Encryption change in class File (Godot 3) / FileAccess (Godot 4)<br>
 * File.store\_var()/FileAccess.get\_var() incompatibility due to changes in the enum Variant.Type values<br>
-<br/>
+
+Tested in Godot 4.0.4-stable, 4.1.3-stable and 4.2-rc2, using test files created in Godot 3.5.3-stable.
 
 ## Classes
 
@@ -76,7 +77,9 @@ Read data that was written in Godot 3 with File.store\_var().
 
 ## Installation
 
-To use the addon in a Godot 4 project, copy the folder **addons/godot\_3\_to\_4\_file\_conversion** into the project folder.
+To use this addon in a Godot 4 project, copy the folder **addons/godot\_3\_to\_4\_file\_conversion/** into the project folder.
+
+If installing from the Godot Editor AssetLib tab, only that folder needs to be installed.
 
 ## Examples
 
@@ -184,7 +187,7 @@ Godot 4 code that reads the file:
 
 ### Example 4
 
-* Read an encrypted Godot 3 file written using ConfigFile, using ConfigFileGodot3.load\_encrypted_pass(). This accomplishes the same result as the previous example, but doesn't create a converted file.
+* Read an encrypted Godot 3 file written using ConfigFile, using ConfigFileGodot3.load\_encrypted_pass(). This has the same result as the previous example, but doesn't create a converted file.
 
 Godot 3 code that creates an encrypted file using ConfigFile:
 
@@ -225,4 +228,4 @@ The repository includes a test of the addon. If you want to repeat the test, imp
 
 3. Copy the folder **addons/godot\_3\_to\_4\_file\_conversion** into the **ValidateTestFilesGodot4** project folder.
 
-3. Open the **ValidateTestFilesGodot4** project in the Godot editor using Godot 4. Select the Main node, and in the Inspector, set the property **Dir Readable** to the path of the test files created above, and set the property **Dir Writable** to a folder that will contain additional test files created by this project. These paths may be the same. Then run the project and click the **Run Tests** button. The **All Tests Passed** label will appear if the tests succeeded.
+3. Open the **ValidateTestFilesGodot4** project in the Godot editor using Godot 4. Select the Main node, and in the Inspector, set the property **Dir Readable** to the path of the test files created above, and set the property **Dir Writable** to a path that will contain additional test files created by this project. These paths may be the same. Then run the project and click the **Run Tests** button. The **All Tests Passed** label will appear if the tests succeeded.
