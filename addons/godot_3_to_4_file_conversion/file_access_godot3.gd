@@ -16,13 +16,24 @@ class_name FileAccessGodot3
 ## Error code. May be accessed externally, but should [b]not[/b] be modified.
 var err: Error = OK
 
+## Debug output level. May be modified externally.
+## 0 = None
+## 1 = Errors (recommended)
+## 2 = Decoded variables
+## 3 = More information
+## 4 = Maximum information
+var debug: int = 1
+
+# For debug output. Should not be modified externally.
+const _RECURSION_LEVEL_INDENT: String = ".. "
+var _indent: String
+
 # For internal use. Should not be modified externally.
 var _file_access: FileAccess
 var _tmp_path: String
 var _tmp_file: FileAccess
 var _key: PackedByteArray
 var _rng: RandomNumberGenerator
-
 
 ## Godot 3 Variant Types
 ## [br][br]
@@ -96,6 +107,24 @@ const _MAP_TYPE_3_TO_4: Dictionary = {
 	_Godot3_Variant_Type.TYPE_COLOR_ARRAY: TYPE_PACKED_COLOR_ARRAY,
 }
 
+# From core/io/marshalls.cpp
+const ENCODE_MASK: int = 0xFF
+const ENCODE_FLAG_64: int = 1 << 16
+const ENCODE_FLAG_OBJECT_AS_ID: int = 1 << 16
+
+class _VariantType:
+	var type: Variant.Type
+	var is_64: bool
+	func _init(_type: Variant.Type, _is_64: bool):
+		type = _type
+		is_64 = _is_64
+
+class _ConvertedElement:
+	var content: PackedByteArray
+	var offset: int
+	func _init(_content: PackedByteArray, _offset: int):
+		content = _content
+		offset = _offset
 
 ## Class constructor.
 ## [br][br]
@@ -121,7 +150,9 @@ func _init(file_access: FileAccess, tmp_path: String = "", key: PackedByteArray 
 	else:
 		key.resize(32)
 		_key = key
-
+	if debug >= 2:
+		assert(not _RECURSION_LEVEL_INDENT.is_empty())
+		_indent = ""
 
 func _make_tmp_path_name() -> String:
 	var cache_dir: String = "user://"
@@ -135,7 +166,8 @@ func _make_tmp_path_name() -> String:
 func _make_key() -> PackedByteArray:
 	var key: PackedByteArray =\
 			str(Time.get_unix_time_from_system() * _rng.randf()).sha256_buffer()
-	#print_debug("%f %f %s %d" % [Time.get_unix_time_from_system(), _rng.randf(), key, key.size()])
+	if debug >= 4:
+		print_debug("%f %f %s %d" % [Time.get_unix_time_from_system(), _rng.randf(), key, key.size()])
 	assert(key.size() == 32)
 	return key
 
@@ -153,7 +185,8 @@ func _make_key() -> PackedByteArray:
 ## [i]The parameter [param allow_objects] is not supported.[/i]
 func get_var() -> Variant:
 
-	#print_debug("_tmp_path=%s, _key=%s" % [_tmp_path, _key])
+	if debug >= 4:
+		print_debug("_tmp_path=%s, _key=%s" % [_tmp_path, _key])
 	# Since the data in the file that's being accessed may be private, encrypt
 	# the temporary file that contains a portion of that data.
 	#
@@ -165,10 +198,11 @@ func get_var() -> Variant:
 	_tmp_file = FileAccess.open_encrypted(_tmp_path, FileAccess.WRITE, _key)
 	err = OK if _tmp_file != null else FileAccess.get_open_error()
 	if err != OK:
-		print_debug("Failed to open file '%s' for writing, error=%d" % [_tmp_path, err])
+		if debug >= 1:
+			print_debug("Failed to open file '%s' for writing, error=%d" % [_tmp_path, err])
 		return null
-	#else:
-		#print_debug("Successfully opened file '%s' for writing" % _tmp_path)
+	elif debug >= 4:
+		print_debug("Successfully opened file '%s' for writing" % _tmp_path)
 
 	# Read a variable from _file_access and write converted variable to _tmp_file.
 	_convert_variable()
@@ -178,14 +212,16 @@ func get_var() -> Variant:
 	_tmp_file = FileAccess.open_encrypted(_tmp_path, FileAccess.READ, _key)
 	err = OK if _tmp_file != null else FileAccess.get_open_error()
 	if err != OK:
-		print_debug("Failed to open file '%s' for reading, error=%d" % [_tmp_path, err])
+		if debug >= 1:
+			print_debug("Failed to open file '%s' for reading, error=%d" % [_tmp_path, err])
 		return null
-	#else:
-		#print_debug("Successfully opened file '%s' for reading" % _tmp_path)
+	elif debug >= 4:
+		print_debug("Successfully opened file '%s' for reading" % _tmp_path)
 
 	# Read converted variable from _tmp_file.
 	var v: Variant = _tmp_file.get_var()
-	#print_debug("v=", v)
+	if debug >= 4:
+		print_debug("v=", v)
 
 	_tmp_file.close()
 
@@ -200,21 +236,30 @@ func get_var() -> Variant:
 # Convert Godot 3 variant type to Godot 4.
 func _convert_variable() -> void:
 
-	#test
-	#var var_start_position: int = _file_access.get_position()
-
 	# Length field: Length is four bytes.
 	# The length includes the variant type field and the variable content.
 	var var_length: int = _file_access.get_32()
 	_tmp_file.store_32(var_length)
 
+	if debug >= 3:
+		print_debug("var_length=%d" % var_length)
+
 	# Variant type field: Length is four bytes.
-	var var_type: Variant.Type =\
+	var converted_variant_type: _VariantType =\
 			_convert_variant_type(_file_access.get_32() as _Godot3_Variant_Type)
+	var var_type: Variant.Type = converted_variant_type.type
+	if converted_variant_type.is_64:
+		var_type |= ENCODE_FLAG_64
 	_tmp_file.store_32(var_type)
+
+	if debug >= 3:
+		print_debug("var_type=%08x" % var_type)
 
 	# Variable content: Length is value of length field less four bytes.
 	var var_content: PackedByteArray = _file_access.get_buffer(var_length - 4)
+
+	if debug >= 3:
+		print_debug("var_content length=%s" % var_content.size())
 
 	if var_type == TYPE_ARRAY or var_type == TYPE_DICTIONARY:
 		var buf: PackedByteArray = _convert_array_or_dictionary(var_type, var_content)
@@ -222,48 +267,120 @@ func _convert_variable() -> void:
 	else:
 		_tmp_file.store_buffer(var_content)
 
-	#test
-	#print_debug("var_length=%d var_type=%d var_content=%s" % [var_length, var_type, var_content])
+		if debug >= 2:
+			var var_size: int = var_content.decode_var_size(0)
+			var var_data: PackedByteArray = var_content.slice(0, var_size)
+			var var_value: Variant = var_content.decode_var(0)
+			print_debug("%sVariant value=%s size=%d data=%s" %\
+					[_indent, var_value, var_size, var_data])
+
+	if debug >= 4:
+	# Length field: Len
+		print_debug("var_length=%d var_type=%08x var_content=%s" %\
+				[var_length, var_type, var_content])
 
 
 func _convert_array_or_dictionary(var_type: Variant.Type, var_content: PackedByteArray) -> PackedByteArray:
+
+	if debug >= 2:
+		_indent += _RECURSION_LEVEL_INDENT
+		print_debug("%senter level %d" %\
+				[_indent, (_indent.length() / _RECURSION_LEVEL_INDENT.length())])
 
 	assert(var_type == TYPE_ARRAY or var_type == TYPE_DICTIONARY)
 
 	var offset: int = 0
 
-	#print_debug("_level=%d var_content=%s" % [_level, var_content])
+	if debug >= 3:
+		print_debug("var_content length=%d" % var_content.size())
+
 	var num_elements: int = var_content.decode_s32(offset)
 	offset += 4
 
-	var updated_var_content_and_offset: Array[Variant]
+	if debug >= 2:
+		match var_type:
+			TYPE_ARRAY:
+				print_debug("%sArray, num elements=%d" % [_indent, num_elements])
+			TYPE_DICTIONARY:
+				print_debug("%sDictionary, num keys=%d" % [_indent, num_elements])
+
+	var converted_element: _ConvertedElement
 
 	for i in range(num_elements):
 		# Process Array element or Dictionary key.
-		updated_var_content_and_offset = _convert_element(var_content, offset)
-		var_content = updated_var_content_and_offset[0] as PackedByteArray
-		offset = updated_var_content_and_offset[1] as int
+		converted_element = _convert_element(var_content, offset)
+		var_content = converted_element.content
+		offset = converted_element.offset
 
 		if var_type == TYPE_DICTIONARY:
 			# Process Dictionary value.
-			updated_var_content_and_offset = _convert_element(var_content, offset)
-			var_content = updated_var_content_and_offset[0] as PackedByteArray
-			offset = updated_var_content_and_offset[1] as int
+			converted_element = _convert_element(var_content, offset)
+			var_content = converted_element.content
+			offset = converted_element.offset
+
+	if debug >= 2:
+		print_debug("%sexit level %d" %\
+				[_indent, (_indent.length() / _RECURSION_LEVEL_INDENT.length())])
+		_indent = _indent.left(-_RECURSION_LEVEL_INDENT.length())
 
 	return var_content
 
 
 # Convert Array element, Dictionary key or Dictionary value.
-# Return value is an Array containing the updated var_content and offset.
-func _convert_element(var_content: PackedByteArray, offset: int) -> Array[Variant]:
+func _convert_element(var_content: PackedByteArray, offset: int) -> _ConvertedElement:
 
 	# Change stored Godot 4 variant type to Godot 4.
-	var var_type_godot3: _Godot3_Variant_Type = var_content.decode_s32(offset) as _Godot3_Variant_Type
-	var var_type: Variant.Type = _convert_variant_type(var_type_godot3)
-	#print_debug("variant type converted from %d to %d" % [var_type_godot3, var_type])
+	var var_type_godot3: _Godot3_Variant_Type =\
+			var_content.decode_s32(offset) as _Godot3_Variant_Type
+	var converted_variant_type: _VariantType =\
+			_convert_variant_type(var_type_godot3)
+	var var_type: Variant.Type = converted_variant_type.type
+	if converted_variant_type.is_64:
+		var_type |= ENCODE_FLAG_64
+	if debug >= 3:
+		print_debug("variant type converted from %08x to %08x" % [var_type_godot3, var_type])
 	var_content.encode_s32(offset, var_type)
 
-	if var_type == TYPE_ARRAY or var_type == TYPE_DICTIONARY:
+	if debug >= 2:
+		match var_type & ENCODE_MASK:
+			TYPE_ARRAY:
+				var num_elements: int = var_content.decode_s32(offset+4)
+				print_debug("%sArray, num elements=%d" % [_indent, num_elements])
+			TYPE_DICTIONARY:
+				var num_elements: int = var_content.decode_s32(offset+4)
+				print_debug("%sDictionary, num keys=%d" % [_indent, num_elements])
+			TYPE_BOOL:
+				var var_size: int = var_content.decode_var_size(offset)
+				var var_data: PackedByteArray = var_content.slice(offset, offset+var_size)
+				var var_value: bool = var_content.decode_var(offset)
+				print_debug("%sbool value=%s size=%d data=%s" % [_indent, var_value, var_size, var_data])
+			TYPE_INT:
+				var var_size: int = var_content.decode_var_size(offset)
+				var var_data: PackedByteArray = var_content.slice(offset, offset+var_size)
+				var var_value: int = var_content.decode_var(offset)
+				print_debug("%sint value=%s size=%d data=%s" % [_indent, var_value, var_size, var_data])
+			TYPE_FLOAT:
+				var var_size: int = var_content.decode_var_size(offset)
+				var var_data: PackedByteArray = var_content.slice(offset, offset+var_size)
+				var var_value: float = var_content.decode_var(offset)
+				print_debug("%sfloat value=%s size=%d data=%s" % [_indent, var_value, var_size, var_data])
+			TYPE_VECTOR2:
+				var var_size: int = var_content.decode_var_size(offset)
+				var var_data: PackedByteArray = var_content.slice(offset, offset+var_size)
+				var var_value: Vector2 = var_content.decode_var(offset)
+				print_debug("%sVector2 value=%s size=%d data=%s" % [_indent, var_value, var_size, var_data])
+			TYPE_STRING:
+				var var_size: int = var_content.decode_var_size(offset)
+				var var_data: PackedByteArray = var_content.slice(offset, offset+var_size)
+				var var_value: String = var_content.decode_var(offset)
+				print_debug("%sString value='%s' size=%d data=%s" % [_indent, var_value, var_size, var_data])
+			_:
+				var var_size: int = var_content.decode_var_size(offset)
+				var var_data: PackedByteArray = var_content.slice(offset, offset+var_size)
+				#var var_value: Variant= var_content.decode_var(offset)
+				print_debug("%sVariant size=%d" % [_indent, var_size])
+
+	if (var_type & ENCODE_MASK) == TYPE_ARRAY or (var_type & ENCODE_MASK) == TYPE_DICTIONARY:
 		# Perform indirect recursive call to convert element that's an Array or Dictionary.
 		# Use offset+4 to skip over type field.
 		var buf: PackedByteArray = _convert_array_or_dictionary(var_type, var_content.slice(offset + 4))
@@ -274,20 +391,29 @@ func _convert_element(var_content: PackedByteArray, offset: int) -> Array[Varian
 			var_content[offset + 4 + j] = buf[j]
 
 	# Skip over variable's content.
-	var var_size: int = var_content.slice(offset).decode_var_size(0)
-	#print_debug("incrementing offset by %d" % offset_delta)
-	#if offset_delta == 0:
-		#print_debug("var_content.slice(offset)=", var_content.slice(offset))
+	var var_size: int = var_content.decode_var_size(offset)
 	offset += var_size
 
-	return [var_content, offset]
+	return _ConvertedElement.new(var_content, offset)
 
 
-# Convert variant type from Godot 4 to Godot 4.
-func _convert_variant_type(var_type_godot3: _Godot3_Variant_Type) -> Variant.Type:
+# Convert variant type from Godot 3 to Godot 4.
+func _convert_variant_type(var_type_godot3: _Godot3_Variant_Type) -> _VariantType:
+
+	var is_64: bool = (var_type_godot3 & ENCODE_FLAG_64) != 0
+	var_type_godot3 &= ENCODE_MASK
+	if debug >= 3:
+		print_debug("is_64=%s" % is_64)
+
 	if _MAP_TYPE_3_TO_4.has(var_type_godot3):
-		return _MAP_TYPE_3_TO_4[var_type_godot3]
+		return _VariantType.new(_MAP_TYPE_3_TO_4[var_type_godot3], is_64)
 	else:
 		# This condition indicates an invalid/corrupt file.
-		print_debug("Unknown Godot 3 variant type: %d" % var_type_godot3)
-		return TYPE_NIL
+		if debug >= 1:
+			print_debug("Unknown Godot 3 variant type: 0x%08x" % var_type_godot3)
+
+		push_error("Unknown Godot 3 variant type: 0x%08x" % var_type_godot3)
+		_tmp_file.close()
+		assert(false)
+
+		return _VariantType.new(TYPE_NIL, is_64)
