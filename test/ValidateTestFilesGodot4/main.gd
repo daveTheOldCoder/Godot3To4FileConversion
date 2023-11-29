@@ -109,6 +109,20 @@ const D7: Dictionary = {\
 	{[1, 2]: {3: 4}}: ["goodbye"],\
 }
 const D8: Dictionary = {1: PBA, 2: [PIA, PFA], 3: {4: PSA}, 5: PV2A}
+const D9: Dictionary = {
+	"int_64": 123456789012345,
+	"pad1": "padding",
+	"float_64": 123456789012345.0,
+	"pad2": "padding",
+	"vector2_64": Vector2(123456789012345.0, 123456789012345.0),
+	"pad3": "padding",
+	"int_32": 123,
+	"pad4": "padding",
+	"float_32": 123.0,
+	"pad5": "padding",
+	"vector2_32": Vector2(123.0, 123.0),
+	"pad6": "padding",
+}
 
 # Test data - ConfigFile
 const DATA: Dictionary = {
@@ -705,8 +719,14 @@ func run_test(path: String, encrypted: bool = false) -> bool:
 
 	var d8: Variant = file_godot3.get_var()
 	err = file.get_error()
-	if not(err == OK and d7 is Dictionary and objects_equal(d8, D8)):
+	if not(err == OK and d8 is Dictionary and objects_equal(d8, D8)):
 		print("Data test failed: D8")
+		ok = false
+
+	var d9: Variant = file_godot3.get_var()
+	err = file.get_error()
+	if not(err == OK and d9 is Dictionary and objects_equal(d9, D9)):
+		print("Data test failed: D9")
 		ok = false
 
 	#print_debug("path=%s encrypted=%s" % [file.get_path(), encrypted])
