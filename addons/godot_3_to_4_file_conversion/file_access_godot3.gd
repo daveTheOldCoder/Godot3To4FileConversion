@@ -16,12 +16,12 @@ class_name FileAccessGodot3
 ## Error code. May be accessed externally, but should [b]not[/b] be modified.
 var err: Error = OK
 
-## Debug output level. May be modified externally.
-## 0 = None
-## 1 = Errors (recommended)
-## 2 = Decoded variables
-## 3 = More information
-## 4 = Maximum information
+## Debug output level. May be modified externally.[br]
+## 0 = None[br]
+## 1 = Errors (recommended)[br]
+## 2 = Decoded variables[br]
+## 3 = More information[br]
+## 4 = Maximum information[br]
 var debug: int = 1
 
 # For debug output. Should not be modified externally.
