@@ -35,13 +35,13 @@ var _tmp_file: FileAccess
 var _key: PackedByteArray
 var _rng: RandomNumberGenerator
 
-## Godot 3 Variant Types
-## [br][br]
-## For internal use by this class.
-## [br][br]
-## References:[br]
-##	[url]https://docs.godotengine.org/en/3.5/classes/class_%40globalscope.html#enum-globalscope-variant-type[/url][br]
-##	[url]https://github.com/godotengine/godot/blob/3.5/core/variant.h[/url]
+# Godot 3 Variant Types
+#
+# For internal use by this class.
+#
+# References:
+#	https://docs.godotengine.org/en/3.5/classes/class_%40globalscope.html#enum-globalscope-variant-type
+#	https://github.com/godotengine/godot/blob/3.5/core/variant.h
 enum _Godot3_Variant_Type {
 	TYPE_NIL = 0,
 	TYPE_BOOL = 1,
