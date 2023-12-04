@@ -16,6 +16,7 @@ mono_crash.*.json
 
 # Custom
 addons/godot-git-plugin
+test/ValidateTestFilesGodot4/addons
 todo.gd
 commit.log
 test_data
