@@ -93,17 +93,11 @@ const D8: Dictionary = {1: PBA, 2: [PIA, PFA], 3: {4: PSA}, 5: PV2A}
 # Test data - 32-bit/64-bit numbers
 const D9: Dictionary = {
 	"int_64": 123456789012345,
-	"pad1": "padding",
 	"float_64": 123456789012345.0,
-	"pad2": "padding",
 	"vector2_64": Vector2(123456789012345.0, 123456789012345.0),
-	"pad3": "padding",
 	"int_32": 123,
-	"pad4": "padding",
 	"float_32": 123.0,
-	"pad5": "padding",
 	"vector2_32": Vector2(123.0, 123.0),
-	"pad6": "padding",
 }
 
 # Test data - ConfigFile
