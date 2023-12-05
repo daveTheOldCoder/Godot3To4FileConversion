@@ -26,6 +26,7 @@ common/drop_mouse_on_gui_input_disabled=true
 
 [network]
 
+limits/debugger/max_chars_per_second=327680
 limits/debugger/max_queued_messages=20480
 
 [physics]
