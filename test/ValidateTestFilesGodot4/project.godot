@@ -20,11 +20,6 @@ window/size/viewport_width=630
 window/size/viewport_height=500
 window/stretch/mode="canvas_items"
 
-[editor]
-
-version_control/plugin_name="GitPlugin"
-version_control/autoload_on_startup=true
-
 [gui]
 
 common/drop_mouse_on_gui_input_disabled=true
