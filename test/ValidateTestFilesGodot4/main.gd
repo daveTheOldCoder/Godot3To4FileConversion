@@ -62,7 +62,7 @@ const PV2A: PackedVector2Array = [Vector2.LEFT, Vector2.RIGHT]
 const PV3A: PackedVector3Array = [Vector3.UP, Vector3.DOWN]
 const PCA: PackedColorArray = [Color.RED, Color.BLUE, Color.GREEN]
 
-# Test data - additional tests
+# Test data - nested Arrays and Dictionaries
 const A2: Array = [[5, 6], [7, 8, 9]]
 const A3: Array = [[5, 6], [7, 8], [[9, 10], [11]]]
 const A4: Array = [[[0]]]
@@ -109,6 +109,8 @@ const D7: Dictionary = {\
 	{[1, 2]: {3: 4}}: ["goodbye"],\
 }
 const D8: Dictionary = {1: PBA, 2: [PIA, PFA], 3: {4: PSA}, 5: PV2A}
+
+# Test data - 32-bit/64-bit numbers
 const D9: Dictionary = {
 	"int_64": 123456789012345,
 	"pad1": "padding",
@@ -643,7 +645,7 @@ func run_test(path: String, encrypted: bool = false) -> bool:
 		print("Data test failed: PC")
 		ok = false
 
-# Additional tests for nested Arrays and Dictionaries.
+# Nested Arrays and Dictionaries.
 
 	var a2: Variant = file_godot3.get_var()
 	err = file.get_error()
@@ -722,6 +724,8 @@ func run_test(path: String, encrypted: bool = false) -> bool:
 	if not(err == OK and d8 is Dictionary and objects_equal(d8, D8)):
 		print("Data test failed: D8")
 		ok = false
+
+	# 32-bit/64-bit numbers
 
 	var d9: Variant = file_godot3.get_var()
 	err = file.get_error()

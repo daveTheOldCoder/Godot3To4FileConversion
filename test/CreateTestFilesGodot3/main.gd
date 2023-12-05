@@ -42,7 +42,7 @@ const PV2A: PoolVector2Array = PoolVector2Array([Vector2.LEFT, Vector2.RIGHT])
 const PV3A: PoolVector3Array = PoolVector3Array([Vector3.UP, Vector3.DOWN])
 const PCA: PoolColorArray = PoolColorArray([Color.red, Color.blue, Color.green])
 
-# Test data - additional tests
+# Test data - nested Arrays and Dictionaries
 const A2: Array = [[5, 6], [7, 8, 9]]
 const A3: Array = [[5, 6], [7, 8], [[9, 10], [11]]]
 const A4: Array = [[[0]]]
@@ -89,6 +89,8 @@ const D7: Dictionary = {\
 	{[1, 2]: {3: 4}}: ["goodbye"],\
 }
 const D8: Dictionary = {1: PBA, 2: [PIA, PFA], 3: {4: PSA}, 5: PV2A}
+
+# Test data - 32-bit/64-bit numbers
 const D9: Dictionary = {
 	"int_64": 123456789012345,
 	"pad1": "padding",
@@ -211,7 +213,7 @@ func write_file(path: String, encrypted: bool = false) -> bool:
 		print_debug("Failed to open file '%s' for writing, error=%d" % [path, err])
 		return false
 	
-# Basic types
+	# Basic types
 	file.store_var(B)
 	file.store_var(I)
 	file.store_8(I)
@@ -249,7 +251,7 @@ func write_file(path: String, encrypted: bool = false) -> bool:
 	file.store_var(PV3A)
 	file.store_var(PCA)
 
-# Additional tests for nested Arrays and Dictionaries.
+	# Nested Arrays and Dictionaries.
 	file.store_var(A2)
 	file.store_var(A3)
 	file.store_var(A4)
@@ -263,6 +265,8 @@ func write_file(path: String, encrypted: bool = false) -> bool:
 	file.store_var(D6)
 	file.store_var(D7)
 	file.store_var(D8)
+
+	# 32-bit/64-bit numbers
 	file.store_var(D9)
 
 	file.close()

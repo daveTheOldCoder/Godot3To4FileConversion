@@ -107,7 +107,7 @@ const _MAP_TYPE_3_TO_4: Dictionary = {
 	_Godot3_Variant_Type.TYPE_COLOR_ARRAY: TYPE_PACKED_COLOR_ARRAY,
 }
 
-# From core/io/marshalls.cpp
+# From https://github.com/godotengine/godot/blob/4.2/core/io/marshalls.cpp
 const ENCODE_MASK: int = 0xFF
 const ENCODE_FLAG_64: int = 1 << 16
 const ENCODE_FLAG_OBJECT_AS_ID: int = 1 << 16
