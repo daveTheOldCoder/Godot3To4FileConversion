@@ -413,7 +413,5 @@ func _convert_variant_type(var_type_godot3: _Godot3_Variant_Type) -> _VariantTyp
 			print_debug("Unknown Godot 3 variant type: 0x%08x" % var_type_godot3)
 
 		push_error("Unknown Godot 3 variant type: 0x%08x" % var_type_godot3)
-		_tmp_file.close()
-		assert(false)
 
 		return _VariantType.new(TYPE_NIL, is_64)
