@@ -7,7 +7,7 @@ Specifically, it provides solutions for these problems:<br>
 * Encryption change in class File (Godot 3) / FileAccess (Godot 4)<br>
 * File.store\_var()/FileAccess.get\_var() incompatibility due to changes in the enum Variant.Type values<br>
 
-Tested in Godot 4.0.4-stable, 4.1.3-stable and 4.2-stable, using test files created in Godot 3.5.3-stable.
+Tested in Godot 4.0.4-stable, 4.1.3-stable and 4.2.1-stable, using test files created in Godot 3.5.3-stable.
 
 ## Classes
 
