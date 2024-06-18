@@ -20,7 +20,7 @@ const FILENAME_GODOT4: String = "/godot4.dat"
 const FILENAME_GODOT4_ENCRYPTED: String = "/godot4_encrypted.dat"
 
 # Test files created in Godot 4, using ConfigFile.
-const FILENAME_GODOT4_CONFIG_FILE: String = "/godot4_config_file.dat"
+const FILENAME_GODOT4_CONFIG_FILE: String = "/godot4_config_file.txt"
 const FILENAME_GODOT4_CONFIG_FILE_ENCRYPTED: String = "/godot4_config_file_encrypted.dat"
 
 var path_godot3: String
