@@ -174,7 +174,7 @@ func write_files() -> bool:
 	path_godot3_config_file = dir_writable + FILENAME_GODOT3_CONFIG_FILE
 	path_godot3_config_file_encrypted = dir_writable + FILENAME_GODOT3_CONFIG_FILE_ENCRYPTED
 
-	var directory: Directory = Directory.new() 
+	var directory: Directory = Directory.new()
 	if not directory.dir_exists(dir_writable):
 		#warning-ignore:return_value_discarded
 		var err: int = directory.make_dir(dir_writable)
@@ -186,7 +186,7 @@ func write_files() -> bool:
 	ok = ok and write_file(path_godot3_encrypted, true)
 	ok = ok and write_config_file(path_godot3_config_file)
 	ok = ok and write_config_file(path_godot3_config_file_encrypted, true)
-	
+
 	return ok
 
 
@@ -206,7 +206,7 @@ func write_file(path: String, encrypted: bool = false) -> bool:
 	else:
 		print_debug("Failed to open file '%s' for writing, error=%d" % [path, err])
 		return false
-	
+
 	# Basic types
 	file.store_var(B)
 	file.store_var(I)
@@ -264,7 +264,7 @@ func write_file(path: String, encrypted: bool = false) -> bool:
 	file.store_var(D9)
 
 	file.close()
-	
+
 	return ok
 
 
