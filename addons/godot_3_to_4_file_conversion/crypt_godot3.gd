@@ -52,6 +52,9 @@ static func reencrypt_with_pass(read_path: String, password: String, write_path:
 ## The parameter [param ignore_md5] may be specified as [i]true[/i] to bypass the MD5 integrity
 ## check.
 ##[br][br]
+## The parameter [param report_bad_length] may be specified as [i]false[/i] to suppress error output
+## when the decrypted data length field is invalid.
+##[br][br]
 ## If an error occurred, an empty array will be returned.
 static func decrypt(path: String, key: PackedByteArray, ignore_md5: bool = false, report_bad_length: bool = true) -> PackedByteArray:
 
