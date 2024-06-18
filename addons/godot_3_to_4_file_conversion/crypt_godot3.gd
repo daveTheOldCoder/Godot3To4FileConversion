@@ -73,11 +73,10 @@ static func decrypt(path: String, key: PackedByteArray, ignore_md5: bool = false
 		#print_debug("Length %d is invalid" % length)
 		err = ERR_FILE_CORRUPT
 		return []
-	var length_rounded_up: int # encrypted data length, rounded up to block size
-	if (length % 16) > 0:
-		length_rounded_up = length + 16 - (length_rounded_up % 16)
-	else:
-		length_rounded_up = length
+	# Round up encrypted data length to multiple of block size (16 bytes).
+	var remainder: int = length % 16
+	var length_rounded_up: int = length + (16 - remainder if remainder > 0 else 0)
+	# Read encrypted data.
 	var data: PackedByteArray = file.get_buffer(length_rounded_up)
 
 	# Decrypt.
