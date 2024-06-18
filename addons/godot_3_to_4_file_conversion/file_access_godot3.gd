@@ -165,7 +165,7 @@ func _make_tmp_path_name() -> String:
 # Make buffer with length 32 containing random bytes.
 func _make_key() -> PackedByteArray:
 	var key: PackedByteArray =\
-			str(Time.get_unix_time_from_system() * _rng.randf()).sha256_buffer()
+			str(Time.get_unix_time_from_system() + _rng.randf()).sha256_buffer()
 	if debug >= 4:
 		print_debug("%f %f %s %d" % [Time.get_unix_time_from_system(), _rng.randf(), key, key.size()])
 	assert(key.size() == 32)
