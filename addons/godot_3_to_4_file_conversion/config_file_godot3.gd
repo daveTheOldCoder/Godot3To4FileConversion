@@ -22,4 +22,3 @@ static func load_encrypted(config_file: ConfigFile, path: String, key: PackedByt
 ## Return OK if successful.
 static func load_encrypted_pass(config_file: ConfigFile, path: String, password: String) -> Error:
 	return load_encrypted(config_file, path, password.md5_text().to_ascii_buffer())
-
