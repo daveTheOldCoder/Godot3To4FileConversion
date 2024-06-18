@@ -231,5 +231,5 @@ The repository includes a test of the addon. If you want to repeat the test, imp
 3. Open the **ValidateTestFilesGodot4** project in the Godot editor using Godot 4. Select the Main node, and in the Inspector, set the property **Dir Readable** to the path of the test files created above, and set the property **Dir Writable** to a path that will be used for additional test files that are created and deleted by this project. These paths may be the same. Then run the project and click the **Run Tests** button. The **All Tests Passed** label will appear if the tests succeeded. The names of the additional test files are:
 	* godot4.dat
 	* godot4\_encrypted.dat
-	* godot4\_config\_file.dat
+	* godot4\_config\_file.txt
 	* godot4\_config\_file\_encrypted.dat
