@@ -3,6 +3,9 @@ class_name CryptGodot3
 ##
 ## @tutorial: https://github.com/daveTheOldCoder/Godot3To4FileConversion#readme
 
+# If true, print debug information when the decrypted data length field is invalid.
+# This is used by the method decrypt().
+static var report_invalid_length: bool
 
 ## Decrypt a file, which was written in Godot 3 using File.open_encrypted(),
 ## File.open_encrypted_with_pass(), ConfigFile.save_encrypted() or
@@ -15,6 +18,7 @@ class_name CryptGodot3
 ## Return OK if successful.
 static func reencrypt(read_path: String, key: PackedByteArray, write_path: String) -> Error:
 
+	report_invalid_length = true
 	var decrypted: PackedByteArray = decrypt(read_path, key)
 
 	# Re-encrypt file.
@@ -52,11 +56,8 @@ static func reencrypt_with_pass(read_path: String, password: String, write_path:
 ## The parameter [param ignore_md5] may be specified as [i]true[/i] to bypass the MD5 integrity
 ## check.
 ##[br][br]
-## The parameter [param report_bad_length] may be specified as [i]false[/i] to suppress error output
-## when the decrypted data length field is invalid.
-##[br][br]
 ## If an error occurred, an empty array will be returned.
-static func decrypt(path: String, key: PackedByteArray, ignore_md5: bool = false, report_bad_length: bool = true) -> PackedByteArray:
+static func decrypt(path: String, key: PackedByteArray, ignore_md5: bool = false) -> PackedByteArray:
 
 	var file: FileAccess
 	var err: Error
@@ -73,9 +74,8 @@ static func decrypt(path: String, key: PackedByteArray, ignore_md5: bool = false
 	var md5_stored: PackedByteArray = file.get_buffer(16)
 	var length: int = file.get_64() # decrypted data length
 	if length < 0 or length > (file.get_length() - file.get_position()):
-		if report_bad_length:
+		if report_invalid_length:
 			print_debug("decrypt: Length %d is invalid" % length)
-		err = ERR_FILE_CORRUPT
 		return []
 	# Round up encrypted data length to multiple of block size (16 bytes).
 	var remainder: int = length % 16
@@ -107,7 +107,6 @@ static func decrypt(path: String, key: PackedByteArray, ignore_md5: bool = false
 		var md5_computed: PackedByteArray = hashing_context.finish()
 		if md5_computed != md5_stored:
 			print_debug("decrypt: MD5 check failed")
-			err = ERR_FILE_CORRUPT
 			return []
 
 	return decrypted
@@ -125,6 +124,7 @@ static func decrypt(path: String, key: PackedByteArray, ignore_md5: bool = false
 ##[br][br]
 ## If an error occurred, an empty array will be returned.
 static func decrypt_with_pass(path: String, password: String, ignore_md5: bool = false) -> PackedByteArray:
+	report_invalid_length = true
 	return decrypt(path, password.md5_text().to_ascii_buffer(), ignore_md5)
 
 
@@ -140,7 +140,7 @@ static func is_encrypted_godot3_file(path: String) -> bool:
 	# In this case, the password isn't needed or provided.
 	# The MD5 check cannot be done without the correct password, since the MD5 is computed on the
 	# decrypted data, so the ignore_md5 parameter is passed as true.
-	# The decrypted data length field may be bad, so suppress the related error output by passing
-	# the report_bad_length parameter as false.
-	var decrypted: PackedByteArray = decrypt(path, [], true, false)
-	return not decrypted.is_empty()
+	# The decrypted data length field will probably be invalid if the file was not created with
+	# encryption in Godot 3, so suppress printing the related debug info.
+	report_invalid_length = false
+	return not decrypt(path, [], true).is_empty()
