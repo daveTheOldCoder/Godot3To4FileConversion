@@ -53,7 +53,7 @@ static func reencrypt_with_pass(read_path: String, password: String, write_path:
 ## check.
 ##[br][br]
 ## If an error occurred, an empty array will be returned.
-static func decrypt(path: String, key: PackedByteArray, ignore_md5: bool = false) -> PackedByteArray:
+static func decrypt(path: String, key: PackedByteArray, ignore_md5: bool = false, report_bad_length: bool = true) -> PackedByteArray:
 
 	var file: FileAccess
 	var err: Error
@@ -61,7 +61,7 @@ static func decrypt(path: String, key: PackedByteArray, ignore_md5: bool = false
 	file = FileAccess.open(path, FileAccess.READ)
 	err = OK if file != null else FileAccess.get_open_error()
 	if err != OK:
-		print_debug("reencrypt_file: Failed to open file '%s' for reading, error=%d" % [path, err])
+		print_debug("decrypt: Failed to open file '%s' for reading, error=%d" % [path, err])
 		return []
 
 	# Read file.
@@ -70,7 +70,8 @@ static func decrypt(path: String, key: PackedByteArray, ignore_md5: bool = false
 	var md5_stored: PackedByteArray = file.get_buffer(16)
 	var length: int = file.get_64() # decrypted data length
 	if length < 0 or length > (file.get_length() - file.get_position()):
-		#print_debug("Length %d is invalid" % length)
+		if report_bad_length:
+			print_debug("decrypt: Length %d is invalid" % length)
 		err = ERR_FILE_CORRUPT
 		return []
 	# Round up encrypted data length to multiple of block size (16 bytes).
@@ -102,7 +103,7 @@ static func decrypt(path: String, key: PackedByteArray, ignore_md5: bool = false
 			return []
 		var md5_computed: PackedByteArray = hashing_context.finish()
 		if md5_computed != md5_stored:
-			#print_debug("reencrypt_file: MD5 check failed")
+			print_debug("decrypt: MD5 check failed")
 			err = ERR_FILE_CORRUPT
 			return []
 
@@ -133,7 +134,10 @@ static func decrypt_with_pass(path: String, password: String, ignore_md5: bool =
 ## It might [b]not[/b] return an accurate result for other files.
 static func is_encrypted_godot3_file(path: String) -> bool:
 	#print_debug("is_encrypted_godot3_file, path '%s'" % path)
-	# In this case, the password isn't needed or provided, and the MD5 check cannot be done without
-	# the correct password, since the MD5 is computed on the decrypted data.
-	var decrypted: PackedByteArray = decrypt(path, [], true)
+	# In this case, the password isn't needed or provided.
+	# The MD5 check cannot be done without the correct password, since the MD5 is computed on the
+	# decrypted data, so the ignore_md5 parameter is passed as true.
+	# The decrypted data length field may be bad, so suppress the related error output by passing
+	# the report_bad_length parameter as false.
+	var decrypted: PackedByteArray = decrypt(path, [], true, false)
 	return not decrypted.is_empty()
