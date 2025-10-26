@@ -1,4 +1,4 @@
 major = 1
 minor = 0
-patch = 5
-status = "stable"
+patch = 6
+status = "dev"
