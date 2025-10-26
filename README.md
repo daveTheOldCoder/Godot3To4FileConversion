@@ -7,9 +7,6 @@ Specifically, it provides solutions for these problems:<br>
 * Encryption change in class File (Godot 3) / FileAccess (Godot 4)<br>
 * File.store\_var()/FileAccess.get\_var() incompatibility due to changes in the enum Variant.Type values<br>
 
-Tested in Godot Editor using Godot versions 4.0.4-stable, 4.1.4-stable, 4.2.2-stable and 4.3-beta2, with test files created in Godot 3.5.3-stable and 3.6-beta5.
-Tested in Linux export, web export and Android export using Godot 4.3-beta2 and the same test files.
-
 ## Classes
 
 Each of these classes has GDScript documentation comments, so that detailed information about the class is available within the Godot editor when the addon is present. To view that information, press F1 or click the Search Help icon, then type the class name.
